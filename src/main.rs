@@ -1,10 +1,10 @@
-use std::collections::HashMap;
 use std::{env, fs};
 use crate::config_models::{Service};
 use crate::config::fetch_environment;
 
 mod config_models;
 mod config;
+mod shell;
 
 fn main() {
     let version = "0.1.0";
@@ -37,24 +37,14 @@ fn main() {
                 // try to fetch an environment
                 let env = fetch_environment(cmd.environment.clone().as_str(), &service_data.environments);
 
-                // Construct the command to be executed
-                let cmd_args = if cmd.capture_all {
-                    env::args().skip(2).collect::<Vec<String>>().join(" ")
-                } else { String::new() };
+                if cmd.capture_all {
+                    // Construct the command to be executed
+                    let given_args = env::args().skip(2).collect::<Vec<String>>().join(" ");
 
-                // execute the command in /bin/sh
-                let mut proc_command = std::process::Command::new("sh");
-                proc_command.args(["-c", cmd_args.as_str().clone()]);
-                proc_command.envs(if let Some(e) = env { e.values.clone() } else { HashMap::new() });
-
-                // Check if the command succeeded
-                let proc_result = proc_command.output();
-                if let Ok(output) = proc_result {
-                    println!("Command returned: {}", output.status);
-                    println!("Command returned: {:?}", String::from_utf8(output.stdout));
-                    println!("Command returned: {:?}", String::from_utf8(output.stderr));
-                } else {
-                    println!("Could not execute command.");
+                    for shell_cmd in &cmd.shell {
+                        let final_command = format!("{} {}", shell_cmd, given_args);
+                        let _ = shell::exec(final_command.as_str(), &env);
+                    }
                 }
             }
         }
