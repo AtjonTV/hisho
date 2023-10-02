@@ -5,6 +5,7 @@ use crate::config::fetch_environment;
 mod config_models;
 mod config;
 mod shell;
+mod template;
 
 fn main() {
     let version = "0.1.0";

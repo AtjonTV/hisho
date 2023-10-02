@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 use crate::config_models::Environment;
+use crate::template;
 
 pub fn fetch_environment(environment: &str, environments: &Vec<Environment>) -> Option<Environment> {
-    println!("Looking for environment: {}", environment);
     let mut found_env: Option<Environment> = None;
     for env in environments {
         if env.name == environment {
@@ -36,7 +36,8 @@ pub fn fetch_environment(environment: &str, environments: &Vec<Environment>) -> 
         current_env.insert(key.clone(), value.clone());
     }
 
-    return Some(Environment::new("current", Vec::new(), current_env));
+    let rendered_env = template::render_environment(current_env);
+    return Some(Environment::new("current", Vec::new(), rendered_env));
 }
 
 impl Environment {
