@@ -7,6 +7,8 @@ edition = "2021"
 
 [dependencies]
 argust = "0.0.3"
+dockworker = "0.3.0"
 liquid = "0.26.4"
 ron = "0.8.1"
 serde = { version = "1", features = ["derive"] }
+tokio = { version = "1.0.0", features = ["rt", "rt-multi-thread", "macros"] }

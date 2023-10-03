@@ -6,8 +6,10 @@ mod config_models;
 mod config;
 mod shell;
 mod template;
+mod containers;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let version = "0.1.0";
     let data_from_file = fs::read_to_string("service.ron").unwrap_or_else(|e| {
         panic!("Could not read service ron file: {:?}", e);
@@ -27,6 +29,9 @@ fn main() {
         println!("Custom Commands:\n{}", service_data.commands.iter().map(|c| format!("- {}", c.name.clone())).collect::<Vec<String>>().join("\n"));
         return;
     }
+
+    // make sure required containers are running
+    containers::ensure_running(&service_data.containers).await;
 
     // parse the args
     let command_set: argust::ArgContext = argust::parse_args(args.iter(), None);
