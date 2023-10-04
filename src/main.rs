@@ -11,6 +11,7 @@ mod containers;
 #[tokio::main]
 async fn main() {
     let version = "0.1.0";
+    println!("Service Helper v{} by Thomas Obernosterer", version);
     let data_from_file = fs::read_to_string("service.ron").unwrap_or_else(|e| {
         panic!("Could not read service ron file: {:?}", e);
     });
