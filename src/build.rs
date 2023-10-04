@@ -1,7 +1,7 @@
 use crate::config_models::{BuildStep, Environment};
 use crate::template;
 
-pub fn get_build_steps(wanted_steps: &Vec<String>, build_steps: &Vec<BuildStep>, env: &Environment) -> Vec<String> {
+pub fn get_build_steps(wanted_steps: &Vec<String>, build_steps: &Vec<BuildStep>, env: &Environment) -> Vec<(String, String)> {
     let all_steps = find_build_steps(wanted_steps, build_steps);
     create_shell_from_steps(&all_steps, env)
 }
@@ -28,11 +28,11 @@ fn find_build_steps(wanted_steps: &Vec<String>, build_steps: &Vec<BuildStep>) ->
     steps
 }
 
-fn create_shell_from_steps(steps: &Vec<BuildStep>, env: &Environment) -> Vec<String> {
-    let mut shell: Vec<String> = Vec::new();
+fn create_shell_from_steps(steps: &Vec<BuildStep>, env: &Environment) -> Vec<(String, String)> {
+    let mut shell: Vec<(String, String)> = Vec::new();
     for step in steps {
         if let Some(shell_cmd) = create_shell_from_step(step, env) {
-            shell.push(shell_cmd);
+            shell.push((step.name.clone(), shell_cmd));
         }
     }
     shell

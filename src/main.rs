@@ -45,19 +45,22 @@ async fn main() {
                 let env = fetch_environment(cmd.environment.clone().as_str(), &service_data.environments).unwrap_or(Environment::new_empty());
 
                 if !cmd.depends_on_build.is_empty() {
+                    println!("Service: Checking Build dependencies ..");
                     let build_steps = build::get_build_steps(&cmd.depends_on_build, &service_data.build, &env);
                     for step in build_steps {
-                        let result = shell::exec(&step, &env);
+                        println!("\tRunning build step: {}", step.0);
+                        let result = shell::exec(&step.1, &env);
                         if result.is_err() {
-                            println!("Failed to run Build Step. Exiting ..");
+                            println!("\tFailed to run Build Step. Exiting ..");
                             return;
                         } else {
                             if !result.unwrap().success() {
-                                println!("Build Step returned non-zero exit code. Exiting ..");
+                                println!("\tBuild Step returned non-zero exit code. Exiting ..");
                                 return;
                             }
                         }
                     }
+                    println!();
                 }
 
                 if cmd.capture_all {

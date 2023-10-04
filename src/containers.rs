@@ -4,6 +4,7 @@ use crate::config_models::Container;
 
 pub async fn ensure_running(containers: &Vec<Container>) {
     if !containers.is_empty() {
+        println!("Service: Checking Container dependencies ..");
         let docker_con = Docker::connect_with_defaults();
         if let Ok(docker) = docker_con {
             let mut filters = ContainerFilters::new();
@@ -15,16 +16,17 @@ pub async fn ensure_running(containers: &Vec<Container>) {
             let found_containers = docker.list_containers(Some(true), None, None, filters).await;
             if let Ok(containers) = found_containers {
                 for container in containers {
-                    println!("Container {:?} is {}", container.Names, container.State);
+                    println!("\tContainer {:?} is {}", container.Names, container.State);
                     if container.State != "running" {
                         if let Err(e) = docker.start_container(container.Id.as_str()).await {
-                            println!("Could not start container {:?}: {:?}", container.Names, e);
+                            println!("\tCould not start container {:?}: {:?}", container.Names, e);
                         } else {
-                            println!("Started container {:?}", container.Names);
+                            println!("\tStarted container {:?}", container.Names);
                         }
                     }
                 }
             }
         }
+        println!();
     }
 }
