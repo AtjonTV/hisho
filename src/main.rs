@@ -17,7 +17,6 @@ async fn main() {
     let service_data: Service = ron::from_str(data_from_file.as_str()).unwrap_or_else(|e| {
         panic!("Could not parse service ron file: {:?}", e);
     });
-    // println!("{:?}", service_data);
 
     // remove the program name from the arguments
     let args: Vec<String> = env::args().skip(1).collect();
@@ -50,6 +49,24 @@ async fn main() {
                     for shell_cmd in &cmd.shell {
                         let final_command = format!("{} {}", shell_cmd, given_args);
                         let _ = shell::exec(final_command.as_str(), &env);
+                    }
+                } else {
+                    let mut rendered_commands: Vec<String> = Vec::new();
+                    let argument_lookup = command_set.long_params.iter().map(|(key, value)| {
+                        if value.is_some() {
+                            (key.clone(), value.clone().unwrap())
+                        } else {
+                            (key.clone(), String::new())
+                        }
+                    }).collect();
+                    for shell_cmd in &cmd.shell {
+                        if let Some(rendered_command) = template::render_string(shell_cmd.clone(), &argument_lookup) {
+                            rendered_commands.push(rendered_command);
+                        }
+                    }
+
+                    for rendered_command in rendered_commands {
+                        let _ = shell::exec(rendered_command.as_str(), &env);
                     }
                 }
             }
