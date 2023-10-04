@@ -25,8 +25,7 @@ async fn main() {
 
     // if no arguments have been given
     if args.is_empty() {
-        println!("service-helper v{}", version);
-        println!("Usage: service-helper <command> [args]\n");
+        println!("Usage: {} <command> [args]\n", env::args().take(1).collect::<Vec<String>>().join(" "));
         println!("Custom Commands:\n{}", service_data.commands.iter().map(|c| format!("- {}", c.name.clone())).collect::<Vec<String>>().join("\n"));
         return;
     }
