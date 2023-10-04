@@ -1,5 +1,5 @@
 use std::{env, fs};
-use crate::config_models::{Service};
+use crate::config_models::{Environment, Service};
 use crate::config::fetch_environment;
 
 mod config_models;
@@ -7,6 +7,7 @@ mod config;
 mod shell;
 mod template;
 mod containers;
+mod build;
 
 #[tokio::main]
 async fn main() {
@@ -42,6 +43,22 @@ async fn main() {
             if cmd.name == *command {
                 // try to fetch an environment
                 let env = fetch_environment(cmd.environment.clone().as_str(), &service_data.environments).unwrap_or(Environment::new_empty());
+
+                if !cmd.depends_on_build.is_empty() {
+                    let build_steps = build::get_build_steps(&cmd.depends_on_build, &service_data.build, &env);
+                    for step in build_steps {
+                        let result = shell::exec(&step, &env);
+                        if result.is_err() {
+                            println!("Failed to run Build Step. Exiting ..");
+                            return;
+                        } else {
+                            if !result.unwrap().success() {
+                                println!("Build Step returned non-zero exit code. Exiting ..");
+                                return;
+                            }
+                        }
+                    }
+                }
 
                 if cmd.capture_all {
                     // Construct the command to be executed

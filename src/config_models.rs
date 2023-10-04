@@ -9,6 +9,8 @@ pub struct Service {
     #[serde(default)]
     pub containers: Vec<Container>,
     #[serde(default)]
+    pub build: Vec<BuildStep>,
+    #[serde(default)]
     pub commands: Vec<Command>,
 }
 
@@ -38,4 +40,15 @@ pub struct Command {
     pub args: HashMap<String, String>,
     #[serde(default)]
     pub capture_all: bool,
+    #[serde(default)]
+    pub depends_on_build: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct BuildStep {
+    pub name: String,
+    #[serde(default)]
+    pub shell: String,
+    #[serde(default)]
+    pub depends_on: Vec<String>,
 }
