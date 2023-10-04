@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::config_models::Environment;
+use crate::config_models::{Environment, Process};
 use crate::template;
 
 pub fn fetch_environment(environment: &str, environments: &Vec<Environment>) -> Option<Environment> {
@@ -53,6 +53,15 @@ impl Environment {
             name: name.to_string(),
             inherits,
             values,
+        }
+    }
+}
+
+impl Process {
+    pub fn new(command: String, args: Vec<String>) -> Process {
+        return Process {
+            command,
+            args,
         }
     }
 }

@@ -35,7 +35,8 @@ pub struct Command {
     pub name: String,
     #[serde(default)]
     pub environment: String,
-    pub shell: Vec<String>,
+    #[serde(default)]
+    pub shell: Vec<Process>,
     #[serde(default)]
     pub args: HashMap<String, String>,
     #[serde(default)]
@@ -45,10 +46,16 @@ pub struct Command {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Process {
+    pub command: String,
+    #[serde(default)]
+    pub args: Vec<String>
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct BuildStep {
     pub name: String,
-    #[serde(default)]
-    pub shell: String,
+    pub shell: Process,
     #[serde(default)]
     pub depends_on: Vec<String>,
 }

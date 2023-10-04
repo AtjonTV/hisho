@@ -1,5 +1,5 @@
 use std::{env, fs};
-use crate::config_models::{Environment, Service};
+use crate::config_models::{Environment, Process, Service};
 use crate::config::fetch_environment;
 
 mod config_models;
@@ -65,14 +65,13 @@ async fn main() {
 
                 if cmd.capture_all {
                     // Construct the command to be executed
-                    let given_args = env::args().skip(2).collect::<Vec<String>>().join(" ");
+                    let given_args = env::args().skip(2).collect::<Vec<String>>();
 
                     for shell_cmd in &cmd.shell {
-                        let final_command = format!("{} {}", shell_cmd, given_args);
-                        let _ = shell::exec(final_command.as_str(), &env);
+                        let _ = shell::exec(&Process::new(shell_cmd.command.clone(), given_args.clone()), &env);
                     }
                 } else {
-                    let mut rendered_commands: Vec<String> = Vec::new();
+                    let mut rendered_commands: Vec<Process> = Vec::new();
                     let argument_lookup = command_set.long_params.iter().map(|(key, value)| {
                         if value.is_some() {
                             (key.clone(), value.clone().unwrap())
@@ -81,13 +80,13 @@ async fn main() {
                         }
                     }).collect();
                     for shell_cmd in &cmd.shell {
-                        if let Some(rendered_command) = template::render_string(shell_cmd.clone(), &argument_lookup) {
+                        if let Some(rendered_command) = template::render_process(shell_cmd, &argument_lookup) {
                             rendered_commands.push(rendered_command);
                         }
                     }
 
-                    for rendered_command in rendered_commands {
-                        let _ = shell::exec(rendered_command.as_str(), &env);
+                    for rendered_command in &rendered_commands {
+                        let _ = shell::exec(rendered_command, &env);
                     }
                 }
             }

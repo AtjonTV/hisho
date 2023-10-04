@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use crate::config_models::Process;
 
 pub fn render_string(template: String, data: &HashMap<String, String>) -> Option<String> {
     let tp_engine = liquid::ParserBuilder::with_stdlib().build();
@@ -35,4 +36,20 @@ pub fn render_environment_value(key: String, value: String, lookup_map: &HashMap
     } else {
         result_map.insert(key.clone(), value.clone());
     }
+}
+
+
+pub fn render_process(process: &Process, args: &HashMap<String, String>) -> Option<Process> {
+    let mut rendered_proc_args: Vec<String> = Vec::new();
+    for arg in &process.args {
+        if let Some(rendered_arg) = render_string(arg.clone(), args) {
+            rendered_proc_args.push(rendered_arg);
+        } else {
+            return None;
+        }
+    }
+    Some(Process {
+        command: process.command.clone(),
+        args: rendered_proc_args,
+    })
 }
