@@ -41,6 +41,13 @@ pub fn fetch_environment(environment: &str, environments: &Vec<Environment>) -> 
 }
 
 impl Environment {
+    pub fn new_empty() -> Environment {
+        return Environment {
+            name: "empty".to_string(),
+            inherits: Vec::new(),
+            values: HashMap::new(),
+        }
+    }
     pub fn new(name: &str, inherits: Vec<String>, values: HashMap<String, String>) -> Environment {
         return Environment {
             name: name.to_string(),

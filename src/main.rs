@@ -41,7 +41,7 @@ async fn main() {
         for cmd in &service_data.commands {
             if cmd.name == *command {
                 // try to fetch an environment
-                let env = fetch_environment(cmd.environment.clone().as_str(), &service_data.environments);
+                let env = fetch_environment(cmd.environment.clone().as_str(), &service_data.environments).unwrap_or(Environment::new_empty());
 
                 if cmd.capture_all {
                     // Construct the command to be executed
