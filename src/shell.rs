@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::io;
 use std::process::ExitStatus;
 use crate::config_models::Environment;
@@ -12,9 +11,9 @@ pub fn exec(command: &str, env: &Environment) -> io::Result<ExitStatus> {
     // Check if the command succeeded
     let proc_result = proc_command.status();
     if let Ok(output) = &proc_result {
-        println!("Command '{}' executed. ({})", command, output);
+        println!("Service: Command '{}' executed. ({})", command, output);
     } else {
-        println!("Could not execute command.");
+        println!("Service: Could not execute command: {}", command);
     }
     proc_result
 }
