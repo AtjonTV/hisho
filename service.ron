@@ -42,6 +42,13 @@ Service(
       ),
       depends_on: ["cargo-version"]
     ),
+    BuildStep(
+      name: "release",
+      shell: Process(
+        command: "cargo",
+        args: ["build", "--release"]
+      ),
+    ),
   ],
   commands: [
     Command(
@@ -66,7 +73,7 @@ Service(
     ),
     Command(
       name: "build",
-      depends_on_build: ["build"]
+      depends_on_build: ["release"]
     ),
   ]
 )

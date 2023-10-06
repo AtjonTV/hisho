@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### Added
-* `sources` string array on `Environment` to define .env files to be loaded
-
 <!--
 ### Added
 ### Changed
@@ -18,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 -->
+
+## [0.1.2] - 2023-10-06
+
+### Added
+* `sources` string array on `Environment` to define .env files to be loaded
+
+### Changed
+* If no shell is defined, Commands exit after running build steps.
 
 ## [0.1.1] - 2023-10-06
 
