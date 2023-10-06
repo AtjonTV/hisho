@@ -958,7 +958,7 @@ dependencies = [
 
 [[package]]
 name = "service_helper"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "argust",
  "dockworker",

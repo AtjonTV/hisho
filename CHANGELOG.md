@@ -16,6 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [0.2.1] - 2023-10-06
+
+### Changed
+- Print message when reading or parsing env file failed
+
+### Fixed
+- `Service: Could not find environment:\n` is not printed when environment is empty
+
 ## [0.2.0] - 2023-10-06
 
 ### Changed
