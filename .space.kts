@@ -6,12 +6,11 @@ job("Build") {
 			}
 		}
 	}
-    container(displayName = "Run script", image = "rustlang/rust:nightly") {
+    container(displayName = "Build for musl", image = "atjontv/rust-musl:1.73.0") {
         shellScript {
             content = """
                 set -e
-                rustup target add x86_64-unknown-linux-musl
-                # Build the Rust project
+                # Build for musl
                 cargo build --verbose --release --target x86_64-unknown-linux-musl
             """
         }
@@ -22,10 +21,6 @@ job("Build") {
 		cache {
 			storeKey = "cargo-{{ hashFiles('Cargo.lock') }}"
 			localPath = "target"
-		}
-		cache {
-			storeKey = "rustlib"
-			localPath = "/usr/local/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-musl"
 		}
     }
 }
