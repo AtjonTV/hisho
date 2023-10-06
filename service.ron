@@ -3,7 +3,9 @@ Service(
   environments: [
     Environment(
       name: "parent",
+      // sources are files, values from files are overwritten by the values defined in here
       sources: ["service-parent.env"],
+      // values, these override any variables from sources or inherits
       values: {
         "FOURTH": "4",
         "FIFTH": "5",
@@ -12,8 +14,11 @@ Service(
     ),
     Environment(
       name: "child",
+      // inherit gets all values from the parents, last parent has precedence
       inherits: ["parent"],
+      // sources are files, values override parent values
       sources: ["service-child.env"],
+      // values, again override any prior variables
       values: {
         "NINETH": "9",
         "TENTH": "10",
