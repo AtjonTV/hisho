@@ -4,6 +4,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 use std::collections::HashMap;
+
 use crate::config_models::Process;
 
 pub fn render_string(template: String, data: &HashMap<String, String>) -> Option<String> {

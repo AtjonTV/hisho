@@ -4,8 +4,9 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 use std::{env, fs};
-use crate::config_models::{Environment, Process, Service};
+
 use crate::config::fetch_environment;
+use crate::config_models::{Environment, Process, Service};
 
 mod config_models;
 mod config;

@@ -3,8 +3,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use crate::config_models::{BuildStep, BuildSteps, Command, Environment, Process};
 use crate::{shell, template};
+use crate::config_models::{BuildStep, BuildSteps, Command, Environment, Process};
 
 pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) -> bool {
     if !cmd.depends_on_build.is_empty() {
@@ -67,9 +67,4 @@ fn create_shell_from_steps(steps: &BuildSteps, env: &Environment) -> Vec<(String
 
 fn create_shell_from_step(step: &BuildStep, env: &Environment) -> Option<Process> {
     template::render_process(&step.shell, &env.values)
-    // if let Some(rendered_command) = template::render_string(step.shell.clone(), &env.values) {
-    //     Some(rendered_command)
-    // } else {
-    //     None
-    // }
 }
