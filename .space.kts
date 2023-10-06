@@ -1,7 +1,9 @@
 job("Build") {
 	startOn {
-		anyTagMatching {
-			+"v*"
+		gitPush {
+			anyTagMatching {
+				+"v*"
+			}
 		}
 	}
     container(displayName = "Run script", image = "rustlang/rust:nightly") {
