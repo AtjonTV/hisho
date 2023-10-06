@@ -3,16 +3,38 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use crate::config_models::{BuildStep, Environment, Process};
-use crate::template;
+use crate::config_models::{BuildStep, BuildSteps, Command, Environment, Process};
+use crate::{shell, template};
 
-pub fn get_build_steps(wanted_steps: &Vec<String>, build_steps: &Vec<BuildStep>, env: &Environment) -> Vec<(String, Process)> {
+pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) -> bool {
+    if !cmd.depends_on_build.is_empty() {
+        println!("Service: Checking Build dependencies ..");
+        let build_steps = get_build_steps(&cmd.depends_on_build, &build_steps, env);
+        for step in build_steps {
+            println!("\tRunning build step: {}", step.0);
+            let result = shell::exec(&step.1, env);
+            if result.is_err() {
+                println!("\tFailed to run Build Step. Exiting ..");
+                return false;
+            } else {
+                if !result.unwrap().success() {
+                    println!("\tBuild Step returned non-zero exit code. Exiting ..");
+                    return false;
+                }
+            }
+        }
+        println!();
+    }
+    true
+}
+
+pub fn get_build_steps(wanted_steps: &Vec<String>, build_steps: &BuildSteps, env: &Environment) -> Vec<(String, Process)> {
     let all_steps = find_build_steps(wanted_steps, build_steps);
     create_shell_from_steps(&all_steps, env)
 }
 
-fn find_build_steps(wanted_steps: &Vec<String>, build_steps: &Vec<BuildStep>) -> Vec<BuildStep> {
-    let mut steps: Vec<BuildStep> = Vec::new();
+fn find_build_steps(wanted_steps: &Vec<String>, build_steps: &BuildSteps) -> BuildSteps {
+    let mut steps: BuildSteps = Vec::new();
 
     for wanted_step in wanted_steps {
         for step in build_steps {
@@ -33,7 +55,7 @@ fn find_build_steps(wanted_steps: &Vec<String>, build_steps: &Vec<BuildStep>) ->
     steps
 }
 
-fn create_shell_from_steps(steps: &Vec<BuildStep>, env: &Environment) -> Vec<(String, Process)> {
+fn create_shell_from_steps(steps: &BuildSteps, env: &Environment) -> Vec<(String, Process)> {
     let mut shell: Vec<(String, Process)> = Vec::new();
     for step in steps {
         if let Some(shell_cmd) = create_shell_from_step(step, env) {

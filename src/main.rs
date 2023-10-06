@@ -48,23 +48,9 @@ async fn main() {
                 // try to fetch an environment
                 let env = fetch_environment(cmd.environment.clone().as_str(), &service_data.environments).unwrap_or(Environment::new_empty());
 
-                if !cmd.depends_on_build.is_empty() {
-                    println!("Service: Checking Build dependencies ..");
-                    let build_steps = build::get_build_steps(&cmd.depends_on_build, &service_data.build, &env);
-                    for step in build_steps {
-                        println!("\tRunning build step: {}", step.0);
-                        let result = shell::exec(&step.1, &env);
-                        if result.is_err() {
-                            println!("\tFailed to run Build Step. Exiting ..");
-                            return;
-                        } else {
-                            if !result.unwrap().success() {
-                                println!("\tBuild Step returned non-zero exit code. Exiting ..");
-                                return;
-                            }
-                        }
-                    }
-                    println!();
+                // make sure required builds have run successfully
+                if !build::ensure_build(&cmd, &service_data.build, &env) {
+                    return;
                 }
 
                 if cmd.capture_all {

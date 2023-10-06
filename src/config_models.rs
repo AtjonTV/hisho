@@ -64,3 +64,4 @@ pub struct BuildStep {
     #[serde(default)]
     pub depends_on: Vec<String>,
 }
+pub type BuildSteps = Vec<BuildStep>;
