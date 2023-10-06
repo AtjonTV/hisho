@@ -63,6 +63,10 @@ Service(
         ),
       ],
       environment: "child",
-    )
+    ),
+    Command(
+      name: "build",
+      depends_on_build: ["build"]
+    ),
   ]
 )

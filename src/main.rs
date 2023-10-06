@@ -67,6 +67,12 @@ async fn main() {
                     return;
                 }
 
+                // if there is no shell defined, do nothing and return
+                if cmd.shell.is_empty() {
+                    println!("Service: No shell, nothing to do. Exiting..");
+                    return;
+                }
+
                 if cmd.capture_all {
                     // Construct the command to be executed
                     let given_args = env::args().skip(2).collect::<Vec<String>>();
