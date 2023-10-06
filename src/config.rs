@@ -55,8 +55,8 @@ fn load_env_from_file(sources: &Vec<String>, out_env: &mut HashMap<String, Strin
         for path in sources {
             if let Ok(data) = fs::read_to_string(path) {
                 if let Ok(btree) = dotenv_parser::parse_dotenv(data.as_str()) {
-                    for (k,v) in btree {
-                        out_env.insert(k,v);
+                    for (k, v) in btree {
+                        out_env.insert(k, v);
                     }
                 }
             }

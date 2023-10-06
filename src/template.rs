@@ -3,8 +3,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use std::collections::HashMap;
 use liquid::Object;
+use std::collections::HashMap;
 
 use crate::config_models::Process;
 
@@ -97,5 +97,5 @@ pub fn render_process(process: &Process, args: Object) -> Option<Process> {
             command: process.command.clone(),
             args: rendered_proc_args,
         })
-    }
+    };
 }

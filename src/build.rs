@@ -4,8 +4,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 use crate::config_models::{BuildStep, BuildSteps, Command, Environment, Process};
-use crate::{shell, template};
 use crate::template::TemplateVariables;
+use crate::{shell, template};
 
 pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) -> bool {
     if !cmd.depends_on_build.is_empty() {

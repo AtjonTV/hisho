@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [0.2.0] - 2023-10-06
+
+### Changed
+* **BREAKING**: Templates are now scoped, with `arg.` for command line arguments and `env.` for defined environment variables.
+
 ## [0.1.2] - 2023-10-06
 
 ### Added
