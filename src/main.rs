@@ -8,12 +8,12 @@ use std::{env, fs};
 use crate::config::fetch_environment;
 use crate::config_models::{Environment, Process, Service};
 
-mod config_models;
+mod build;
 mod config;
+mod config_models;
+mod containers;
 mod shell;
 mod template;
-mod containers;
-mod build;
 
 #[tokio::main]
 async fn main() {
@@ -31,8 +31,19 @@ async fn main() {
 
     // if no arguments have been given
     if args.is_empty() {
-        println!("Usage: {} <command> [args]\n", env::args().take(1).collect::<Vec<String>>().join(" "));
-        println!("Custom Commands:\n{}", service_data.commands.iter().map(|c| format!("- {}", c.name.clone())).collect::<Vec<String>>().join("\n"));
+        println!(
+            "Usage: {} <command> [args]\n",
+            env::args().take(1).collect::<Vec<String>>().join(" ")
+        );
+        println!(
+            "Custom Commands:\n{}",
+            service_data
+                .commands
+                .iter()
+                .map(|c| format!("- {}", c.name.clone()))
+                .collect::<Vec<String>>()
+                .join("\n")
+        );
         return;
     }
 
@@ -47,7 +58,9 @@ async fn main() {
         for cmd in &service_data.commands {
             if cmd.name == *command {
                 // try to fetch an environment
-                let env = fetch_environment(cmd.environment.clone().as_str(), &service_data.environments).unwrap_or(Environment::new_empty());
+                let env =
+                    fetch_environment(cmd.environment.clone().as_str(), &service_data.environments)
+                        .unwrap_or(Environment::new_empty());
 
                 // make sure required builds have run successfully
                 if !build::ensure_build(&cmd, &service_data.build, &env) {
@@ -59,19 +72,28 @@ async fn main() {
                     let given_args = env::args().skip(2).collect::<Vec<String>>();
 
                     for shell_cmd in &cmd.shell {
-                        let _ = shell::exec(&Process::new(shell_cmd.command.clone(), given_args.clone()), &env);
+                        let _ = shell::exec(
+                            &Process::new(shell_cmd.command.clone(), given_args.clone()),
+                            &env,
+                        );
                     }
                 } else {
                     let mut rendered_commands: Vec<Process> = Vec::new();
-                    let argument_lookup = command_set.long_params.iter().map(|(key, value)| {
-                        if value.is_some() {
-                            (key.clone(), value.clone().unwrap())
-                        } else {
-                            (key.clone(), String::new())
-                        }
-                    }).collect();
+                    let argument_lookup = command_set
+                        .long_params
+                        .iter()
+                        .map(|(key, value)| {
+                            if value.is_some() {
+                                (key.clone(), value.clone().unwrap())
+                            } else {
+                                (key.clone(), String::new())
+                            }
+                        })
+                        .collect();
                     for shell_cmd in &cmd.shell {
-                        if let Some(rendered_command) = template::render_process(shell_cmd, &argument_lookup) {
+                        if let Some(rendered_command) =
+                            template::render_process(shell_cmd, &argument_lookup)
+                        {
                             rendered_commands.push(rendered_command);
                         }
                     }

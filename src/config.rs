@@ -52,22 +52,19 @@ impl Environment {
             name: "empty".to_string(),
             inherits: Vec::new(),
             values: HashMap::new(),
-        }
+        };
     }
     pub fn new(name: &str, inherits: Vec<String>, values: HashMap<String, String>) -> Environment {
         return Environment {
             name: name.to_string(),
             inherits,
             values,
-        }
+        };
     }
 }
 
 impl Process {
     pub fn new(command: String, args: Vec<String>) -> Process {
-        return Process {
-            command,
-            args,
-        }
+        return Process { command, args };
     }
 }

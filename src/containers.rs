@@ -19,7 +19,9 @@ pub async fn ensure_running(containers: &Containers) {
                     filters.name(c.name.as_str().clone());
                 }
             });
-            let found_containers = docker.list_containers(Some(true), None, None, filters).await;
+            let found_containers = docker
+                .list_containers(Some(true), None, None, filters)
+                .await;
             if let Ok(containers) = found_containers {
                 for container in containers {
                     println!("\tContainer {:?} is {}", container.Names, container.State);

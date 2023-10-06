@@ -23,7 +23,10 @@ pub fn render_string(template: String, data: &HashMap<String, String>) -> Option
             println!("Failed to parse template: {}", tp_template.err().unwrap());
         }
     } else {
-        println!("Failed to create template engine: {}", tp_engine.err().unwrap());
+        println!(
+            "Failed to create template engine: {}",
+            tp_engine.err().unwrap()
+        );
     }
     return None;
 }
@@ -36,14 +39,18 @@ pub fn render_environment(env: HashMap<String, String>) -> HashMap<String, Strin
     result
 }
 
-pub fn render_environment_value(key: String, value: String, lookup_map: &HashMap<String, String>, result_map: &mut HashMap<String, String>) {
+pub fn render_environment_value(
+    key: String,
+    value: String,
+    lookup_map: &HashMap<String, String>,
+    result_map: &mut HashMap<String, String>,
+) {
     if let Some(rendered_value) = render_string(value.clone(), lookup_map) {
         result_map.insert(key.clone(), rendered_value);
     } else {
         result_map.insert(key.clone(), value.clone());
     }
 }
-
 
 pub fn render_process(process: &Process, args: &HashMap<String, String>) -> Option<Process> {
     let mut rendered_proc_args: Vec<String> = Vec::new();
