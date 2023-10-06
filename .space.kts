@@ -10,7 +10,7 @@ job("Build") {
         shellScript {
             content = """
                 set -e
-                rustup target add x86_64-unknown-linux-gnu
+                rustup target add x86_64-unknown-linux-musl
                 # Build the Rust project
                 cargo build --verbose --release --target x86_64-unknown-linux-musl
             """
@@ -18,6 +18,10 @@ job("Build") {
 		fileArtifacts {
 			remotePath = "service_helper-musl.bin"
 			localPath = "target/x86_64-unknown-linux-musl/release/service_helper"
+		}
+		cache {
+			storeKey = "cargo-{{ hashFiles('Cargo.lock') }}"
+			localPath = "target"
 		}
     }
 }
