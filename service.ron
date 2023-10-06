@@ -1,0 +1,63 @@
+Service(
+  name: "service_helper",
+  environments: [
+    Environment(
+      name: "parent",
+      sources: ["service-parent.env"],
+      values: {
+        "FOURTH": "4",
+        "FIFTH": "5",
+        "OVERRIDE_BY_VALUES": "yes",
+      }
+    ),
+    Environment(
+      name: "child",
+      inherits: ["parent"],
+      sources: ["service-child.env"],
+      values: {
+        "NINETH": "9",
+        "TENTH": "10",
+        "OVERRIDE_BY_CHILD_VALUES": "yes",
+      },
+    ),
+  ],
+  build: [
+    BuildStep(
+      name: "cargo-version",
+      shell: Process(
+        command: "cargo",
+        args: ["--version"]
+      ),
+    ),
+    BuildStep(
+      name: "build",
+      shell: Process(
+        command: "cargo",
+        args: ["build"]
+      ),
+      depends_on: ["cargo-version"]
+    ),
+  ],
+  commands: [
+    Command(
+      name: "run",
+      shell: [
+        Process(
+          command: "target/x86_64-unknown-linux-musl/debug/service_helper",
+          args: ["echo-env"]
+        ),
+      ],
+      depends_on_build: ["build"]
+    ),
+    Command(
+      name: "echo-env",
+      shell: [
+        Process(
+          command: "bash",
+          args: ["./service-env.sh"],
+        ),
+      ],
+      environment: "child",
+    )
+  ]
+)
