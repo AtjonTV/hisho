@@ -18,7 +18,9 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
     }
 
     if found_env.is_none() {
-        println!("Could not find environment: {}", environment);
+        if !environments.is_empty() {
+            println!("Service: Could not find environment: {}", environment);
+        }
         return None;
     }
 
