@@ -19,8 +19,8 @@ job("Build") {
 			localPath = "target/x86_64-unknown-linux-musl/release/service_helper"
 		}
 		cache {
-			storeKey = "cargo-{{ hashFiles('Cargo.lock') }}"
-			localPath = "target"
+			storeKey = "cargo_deps-{{ hashFiles('Cargo.toml', 'Cargo.lock') }}"
+			localPath = "target/x86_64-unknown-linux-musl/release/deps"
 		}
     }
 }
