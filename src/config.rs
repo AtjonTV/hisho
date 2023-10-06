@@ -60,7 +60,11 @@ fn load_env_from_file(sources: &Vec<String>, out_env: &mut HashMap<String, Strin
                     for (k, v) in btree {
                         out_env.insert(k, v);
                     }
+                } else {
+                    println!("Service: Could not parse environment file {}", path);
                 }
+            } else {
+                println!("Service: Could not read environment file: {}", path);
             }
         }
     }
