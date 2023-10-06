@@ -5,9 +5,10 @@
 
 use dockworker::container::ContainerFilters;
 use dockworker::Docker;
-use crate::config_models::Container;
 
-pub async fn ensure_running(containers: &Vec<Container>) {
+use crate::config_models::Containers;
+
+pub async fn ensure_running(containers: &Containers) {
     if !containers.is_empty() {
         println!("Service: Checking Container dependencies ..");
         let docker_con = Docker::connect_with_defaults();

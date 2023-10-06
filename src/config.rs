@@ -4,10 +4,11 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 use std::collections::HashMap;
-use crate::config_models::{Environment, Process};
+
+use crate::config_models::{Environment, Environments, Process};
 use crate::template;
 
-pub fn fetch_environment(environment: &str, environments: &Vec<Environment>) -> Option<Environment> {
+pub fn fetch_environment(environment: &str, environments: &Environments) -> Option<Environment> {
     let mut found_env: Option<Environment> = None;
     for env in environments {
         if env.name == environment {

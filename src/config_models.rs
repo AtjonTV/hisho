@@ -4,19 +4,20 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Service {
     pub name: String,
     #[serde(default)]
-    pub environments: Vec<Environment>,
+    pub environments: Environments,
     #[serde(default)]
-    pub containers: Vec<Container>,
+    pub containers: Containers,
     #[serde(default)]
-    pub build: Vec<BuildStep>,
+    pub build: BuildSteps,
     #[serde(default)]
-    pub commands: Vec<Command>,
+    pub commands: Commands,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -27,6 +28,7 @@ pub struct Environment {
     #[serde(default)]
     pub values: HashMap<String, String>,
 }
+pub type Environments = Vec<Environment>;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Container {
@@ -34,6 +36,7 @@ pub struct Container {
     #[serde(default)]
     pub required: bool,
 }
+pub type Containers = Vec<Container>;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Command {
@@ -49,6 +52,7 @@ pub struct Command {
     #[serde(default)]
     pub depends_on_build: Vec<String>,
 }
+pub type Commands = Vec<Command>;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Process {
