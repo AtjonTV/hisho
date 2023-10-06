@@ -4,6 +4,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 use std::collections::HashMap;
+use std::fs;
 
 use crate::config_models::{Environment, Environments, Process};
 use crate::template;
@@ -26,7 +27,8 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
     if env.inherits.len() != 0 {
         let mut parent_envs: Vec<Environment> = Vec::new();
         for parent_env in &env.inherits {
-            if let Some(parent) = fetch_environment(parent_env, environments) {
+            if let Some(mut parent) = fetch_environment(parent_env, environments) {
+                load_env_from_file(&parent.sources, &mut parent.values);
                 parent_envs.push(parent);
             }
         }
@@ -38,6 +40,7 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
         }
     }
 
+    load_env_from_file(&env.sources, &mut current_env);
     for (key, value) in env.values {
         current_env.insert(key.clone(), value.clone());
     }
@@ -46,12 +49,27 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
     return Some(Environment::new("current", Vec::new(), rendered_env));
 }
 
+fn load_env_from_file(sources: &Vec<String>, out_env: &mut HashMap<String, String>) {
+    if !sources.is_empty() {
+        for path in sources {
+            if let Ok(data) = fs::read_to_string(path) {
+                if let Ok(btree) = dotenv_parser::parse_dotenv(data.as_str()) {
+                    for (k,v) in btree {
+                        out_env.insert(k,v);
+                    }
+                }
+            }
+        }
+    }
+}
+
 impl Environment {
     pub fn new_empty() -> Environment {
         return Environment {
             name: "empty".to_string(),
             inherits: Vec::new(),
             values: HashMap::new(),
+            sources: Vec::new(),
         };
     }
     pub fn new(name: &str, inherits: Vec<String>, values: HashMap<String, String>) -> Environment {
@@ -59,6 +77,7 @@ impl Environment {
             name: name.to_string(),
             inherits,
             values,
+            sources: Vec::new(),
         };
     }
 }

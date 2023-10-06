@@ -27,6 +27,8 @@ pub struct Environment {
     pub inherits: Vec<String>,
     #[serde(default)]
     pub values: HashMap<String, String>,
+    #[serde(default)]
+    pub sources: Vec<String>,
 }
 pub type Environments = Vec<Environment>;
 
