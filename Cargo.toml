@@ -5,6 +5,9 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+allow_unsafe_command_templates = []
+
 [dependencies]
 argust = "0.0.3"
 dockworker = "0.3.0"

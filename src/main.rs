@@ -7,6 +7,7 @@ use std::{env, fs};
 
 use crate::config::fetch_environment;
 use crate::config_models::{Environment, Process, Service};
+use crate::template::TemplateVariables;
 
 mod build;
 mod config;
@@ -96,9 +97,12 @@ async fn main() {
                             }
                         })
                         .collect();
+                    let mut vars = TemplateVariables::new();
+                    vars.insert("env", env.values.clone());
+                    vars.insert("arg", argument_lookup);
                     for shell_cmd in &cmd.shell {
                         if let Some(rendered_command) =
-                            template::render_process(shell_cmd, &argument_lookup)
+                            template::render_process(shell_cmd, vars.as_value())
                         {
                             rendered_commands.push(rendered_command);
                         }

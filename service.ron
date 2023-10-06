@@ -25,6 +25,15 @@ Service(
         "OVERRIDE_BY_CHILD_VALUES": "yes",
       },
     ),
+    Environment(
+      name: "test",
+      // inherit gets all values from the parents, last parent has precedence
+      inherits: ["child"],
+      // values, again override any prior variables
+      values: {
+        "run_command": "test"
+      },
+    ),
   ],
   build: [
     BuildStep(
@@ -32,6 +41,13 @@ Service(
       shell: Process(
         command: "cargo",
         args: ["--version"]
+      ),
+    ),
+    BuildStep(
+      name: "render-template",
+      shell: Process(
+        command: "echo",
+        args: ["{{env.FIRST}}"]
       ),
     ),
     BuildStep(
@@ -74,6 +90,22 @@ Service(
     Command(
       name: "build",
       depends_on_build: ["release"]
+    ),
+    Command(
+      name: "test",
+      environment: "child",
+      depends_on_build: ["render-template"]
+    ),
+    Command(
+      name: "test-build",
+      shell: [
+        Process(
+          command: "target/x86_64-unknown-linux-musl/debug/service_helper",
+          args: ["{{env.run_command}}"]
+        ),
+      ],
+      environment: "test",
+      depends_on_build: ["build"]
     ),
   ]
 )
