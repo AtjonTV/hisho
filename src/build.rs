@@ -53,11 +53,22 @@ fn find_build_steps(wanted_steps: &Vec<String>, build_steps: &BuildSteps) -> Bui
     for wanted_step in wanted_steps {
         for step in build_steps {
             if step.name.eq(wanted_step) {
+                // Skip if the step is already in steps
+                if steps.contains(step) {
+                    continue;
+                }
                 steps.push(step.clone());
 
+                // Create a new build_steps, without the current step
+                let new_build_steps = build_steps.iter().filter(|s| !s.name.eq(wanted_step)).cloned().collect::<BuildSteps>();
+
                 if !step.depends_on.is_empty() {
-                    let parent_steps = find_build_steps(&step.depends_on, build_steps);
+                    let parent_steps = find_build_steps(&step.depends_on, &new_build_steps);
                     for parent_step in parent_steps {
+                        // Skip if the step is already in steps
+                        if steps.contains(&parent_step) {
+                            continue;
+                        }
                         steps.push(parent_step.clone());
                     }
                 }

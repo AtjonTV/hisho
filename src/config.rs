@@ -6,7 +6,7 @@
 use std::collections::HashMap;
 use std::fs;
 
-use crate::config_models::{Environment, Environments, Process};
+use crate::config_models::{BuildStep, Environment, Environments, Process};
 use crate::template;
 
 pub fn fetch_environment(environment: &str, environments: &Environments) -> Option<Environment> {
@@ -102,5 +102,15 @@ impl Environment {
 impl Process {
     pub fn new(command: String, args: Vec<String>) -> Process {
         return Process { command, args };
+    }
+}
+
+impl PartialEq for BuildStep {
+    fn eq(&self, other: &Self) -> bool {
+        self.name.eq(&other.name)
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        !self.name.eq(&other.name)
     }
 }
