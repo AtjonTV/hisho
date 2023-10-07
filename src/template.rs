@@ -30,7 +30,7 @@ impl TemplateVariables {
 pub fn render_string(template: String, data: &Object) -> Option<String> {
     let tp_engine = liquid::ParserBuilder::with_stdlib().build();
     if let Ok(engine) = &tp_engine {
-        let tp_template = engine.parse(template.as_str().clone());
+        let tp_template = engine.parse(template.as_str());
         if let Ok(template) = tp_template {
             let tp_value = template.render(data);
             if let Ok(rendered_value) = tp_value {

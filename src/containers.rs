@@ -16,7 +16,7 @@ pub async fn ensure_running(containers: &Containers) {
             let mut filters = ContainerFilters::new();
             containers.iter().for_each(|c| {
                 if c.required {
-                    filters.name(c.name.as_str().clone());
+                    filters.name(c.name.as_str());
                 }
             });
             let found_containers = docker
