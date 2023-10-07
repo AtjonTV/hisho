@@ -10,6 +10,10 @@ use crate::config_models::{Environment, Environments, Process};
 use crate::template;
 
 pub fn fetch_environment(environment: &str, environments: &Environments) -> Option<Environment> {
+    if environment.is_empty() {
+        return None;
+    }
+
     let mut found_env: Option<Environment> = None;
     for env in environments {
         if env.name == environment {
