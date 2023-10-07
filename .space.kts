@@ -21,6 +21,9 @@ job("Build") {
 		cache {
 			storeKey = "cargo_deps-{{ hashFiles('Cargo.toml', 'Cargo.lock') }}"
 			localPath = "target/x86_64-unknown-linux-musl/release/deps"
+            restoreKeys {
+                +"cargo_deps-base"
+            }
 		}
     }
 }
