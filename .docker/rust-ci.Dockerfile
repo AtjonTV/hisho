@@ -3,8 +3,8 @@ FROM buildpack-deps:bookworm
 WORKDIR /root
 
 ENV RUSTUP_HOME=/usr/local/rustup \
-    CARGO_HOME=/root/.cargo \
-    PATH=/root/.cargo/bin:$PATH \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:$PATH \
     RUST_VERSION=1.73.0 \
     SCCACHE_VERSION=0.5.4
 
@@ -24,6 +24,8 @@ RUN set -eux; \
     ./rustup-init -y --no-modify-path --profile minimal --default-toolchain $RUST_VERSION --default-host ${rustArch}; \
     rm rustup-init; \
     chmod -R a+w $RUSTUP_HOME $CARGO_HOME;
+
+ENV CARGO_HOME=/root/.cargo
 
 RUN rustup target add x86_64-unknown-linux-musl
 

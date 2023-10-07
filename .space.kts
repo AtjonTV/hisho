@@ -6,7 +6,7 @@ job("Build") {
 			}
 		}
 	}
-    container(displayName = "Build for musl", image = "atjontv/rust-musl-sccache:1.73.0-2") {
+    container(displayName = "Build for musl", image = "atjontv/rust-musl-sccache:1.73.0-3") {
         mountDir = "/root"
         shellScript {
             content = """
