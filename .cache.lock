@@ -1,0 +1,7 @@
+# This is a file we use to "version" the cache artifacts in Space Automation.
+# Every time the automation runs, this file is hashed and based on that hash either
+# an existent cache is loaded and used for compilation.
+# Due to this, this file should only be modified when a new cache is needed.
+# Such a situation may arise when dependencies or files changed a lot and
+# compilation times become slow again.
+TIME="2023-10-08T14:29:00.0+0200"

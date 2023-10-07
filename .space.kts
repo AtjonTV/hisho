@@ -6,7 +6,8 @@ job("Build") {
 			}
 		}
 	}
-    container(displayName = "Build for musl", image = "atjontv/rust-musl:1.73.0") {
+    container(displayName = "Build for musl", image = "atjontv/rust-musl-sccache:1.73.0") {
+        mountDir = "/root"
         shellScript {
             content = """
                 set -e
@@ -19,11 +20,13 @@ job("Build") {
 			localPath = "target/x86_64-unknown-linux-musl/release/service_helper"
 		}
 		cache {
-			storeKey = "cargo_deps-{{ hashFiles('Cargo.toml', 'Cargo.lock') }}"
-			localPath = "target/x86_64-unknown-linux-musl/release/deps"
-            restoreKeys {
-                +"cargo_deps-base"
-            }
+			storeKey = "sccache-{{ hashFiles('.cache.lock') }}"
+			localPath = "/root/.cache/sccache"
 		}
+        cache {
+            storeKey = "cargo-{{ hashFiles('.cache.lock') }}"
+            localPath = "/root/.cargo"
+        }
+
     }
 }
