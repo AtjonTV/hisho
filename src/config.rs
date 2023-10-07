@@ -16,6 +16,8 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
             found_env = Some(env.clone());
         }
     }
+    // Create a new environments, without the current environment
+    let new_environments = environments.iter().filter(|env| env.name != environment).cloned().collect::<Vec<Environment>>();
 
     if found_env.is_none() {
         if !environment.is_empty() {
@@ -30,7 +32,7 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
     if env.inherits.len() != 0 {
         let mut parent_envs: Vec<Environment> = Vec::new();
         for parent_env in &env.inherits {
-            if let Some(mut parent) = fetch_environment(parent_env, environments) {
+            if let Some(mut parent) = fetch_environment(parent_env, &new_environments) {
                 // Prevent an environment from depending on itself
                 if parent.name == environment {
                     continue;
