@@ -31,6 +31,10 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
         let mut parent_envs: Vec<Environment> = Vec::new();
         for parent_env in &env.inherits {
             if let Some(mut parent) = fetch_environment(parent_env, environments) {
+                // Prevent an environment from depending on itself
+                if parent.name == environment {
+                    continue;
+                }
                 load_env_from_file(&parent.sources, &mut parent.values);
                 parent_envs.push(parent);
             }
