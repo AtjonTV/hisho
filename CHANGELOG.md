@@ -7,11 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### Added
-* `input_files` vector on BuildStep to get a list of files by glob pattern as `{{build.input_files}}`
-* `name` of BuildStep as `{{build.input_files}}`
-* `--service:file` argument can be used to specify the service ron file to load, defaults to `service.ron`
-
 <!--
 ### Added
 ### Changed
@@ -20,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 -->
+
+## [0.3.0] - 2023-10-07
+
+### Added
+* `input_files` vector on BuildStep to get a list of files by glob pattern as `{{build.input_files}}`
+* `name` of BuildStep as `{{build.input_files}}`
+* `--service:file` argument can be used to specify the service ron file to load, defaults to `service.ron`
+
 
 ## [0.2.2] - 2023-10-07
 
