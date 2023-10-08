@@ -47,7 +47,7 @@ Service(
       name: "render-template",
       shell: Process(
         command: "echo",
-        args: ["compile", "{{build.input_files}}"]
+        args: ["job", "'{{build.name}}'", "compiles", "'{{build.input_files}}'"]
       ),
       input_files: ["src/*.rs"]
     ),

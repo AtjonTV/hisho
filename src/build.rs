@@ -109,6 +109,10 @@ fn create_build_vars(step: &BuildStep) -> HashMap<String, String> {
         "input_files".to_string(),
         resolve_files_from_globs(&step.input_files).join(" "),
     );
+    result.insert(
+        "name".to_string(),
+        step.name.clone(),
+    );
     result
 }
 
