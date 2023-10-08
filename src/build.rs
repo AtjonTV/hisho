@@ -21,16 +21,16 @@ pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) 
                 println!("\tRunning build step: {}", step.0);
                 let result = shell::exec(&rendered_command, env);
                 if result.is_err() {
-                    println!("\tFailed to run Build Step!");
+                    eprintln!("\tFailed to run Build Step!");
                     return false;
                 } else {
                     if !result.unwrap().success() {
-                        println!("\tBuild Step returned non-zero exit code!");
+                        eprintln!("\tBuild Step returned non-zero exit code!");
                         return false;
                     }
                 }
             } else {
-                println!("\tFailed to render Build Step!");
+                eprintln!("\tFailed to render Build Step!");
                 return false;
             }
         }

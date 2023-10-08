@@ -27,7 +27,7 @@ pub async fn ensure_running(containers: &Containers) {
                     println!("\tContainer {:?} is {}", container.Names, container.State);
                     if container.State != "running" {
                         if let Err(e) = docker.start_container(container.Id.as_str()).await {
-                            println!("\tCould not start container {:?}: {:?}", container.Names, e);
+                            eprintln!("\tCould not start container {:?}: {:?}", container.Names, e);
                         } else {
                             println!("\tStarted container {:?}", container.Names);
                         }
