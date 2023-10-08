@@ -69,6 +69,15 @@ Service(
   ],
   commands: [
     Command(
+      name: "exec",
+      shell: [
+        Process(
+          command: "echo",
+        ),
+      ],
+      capture_all: true
+    ),
+    Command(
       name: "run",
       shell: [
         Process(

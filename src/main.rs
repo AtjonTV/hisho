@@ -4,6 +4,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 use std::{env, fs};
+use ron::error::SpannedResult;
 
 use crate::config::fetch_environment;
 use crate::config_models::{Environment, Process, Service};
@@ -20,15 +21,58 @@ mod template;
 async fn main() {
     let version = env!("CARGO_PKG_VERSION");
     println!("Service Helper v{} by Thomas Obernosterer", version);
-    let data_from_file = fs::read_to_string("service.ron").unwrap_or_else(|e| {
-        panic!("Could not read service ron file: {:?}", e);
-    });
-    let service_data: Service = ron::from_str(data_from_file.as_str()).unwrap_or_else(|e| {
-        panic!("Could not parse service ron file: {:?}", e);
-    });
+    let default_service_file = "service2.ron";
 
     // remove the program name from the arguments
-    let args: Vec<String> = env::args().skip(1).collect();
+    let mut args: Vec<String> = env::args().skip(1).collect();
+
+    // check if the default service file exists
+    let default_file_exists = fs::metadata(default_service_file).is_ok();
+
+    // if no arguments have been given and the default service file does not exist
+    if args.is_empty() && !default_file_exists {
+        println!(
+            "Usage: {} <command> [args]",
+            env::args().take(1).collect::<Vec<String>>().join(" ")
+        );
+        println!(
+            "Arguments:\n--service:file\tSpecify a .ron file to load, tries to load '{}' by default", default_service_file
+        );
+        return;
+    }
+
+    // parse the args
+    let mut command_set: argust::ArgContext = argust::parse_args(args.iter(), None);
+
+    // try to get file name from -f, and default to default_service_file if -f not given or empty
+    let service_file = command_set.long_params.get("service:file").unwrap_or(&None).clone().unwrap_or(default_service_file.to_string());
+
+    let data_from_file = fs::read_to_string(service_file.as_str());
+    if let Err(e) = data_from_file {
+        eprintln!("Service: Could not read service file '{}': {:?}", service_file, e.to_string());
+        return;
+    }
+    let service_data: SpannedResult<Service> = ron::from_str(data_from_file.unwrap().as_str());
+    if let Err(e) = service_data {
+        eprintln!("Service: Could not parse service file '{}': {:?}", service_file, e.to_string());
+        return;
+    }
+
+    // remove --file if exists
+    command_set.long_params.remove("service:file");
+    if args.len() > 0 {
+        let mut idx_to_remove = vec![];
+        for i in 0..args.len() {
+            if args[i].starts_with("--service:file") {
+                idx_to_remove.push(i);
+            }
+        }
+        for i in idx_to_remove.iter().rev() {
+            args.remove(*i);
+        }
+    }
+
+    let service = service_data.unwrap();
 
     // if no arguments have been given
     if args.is_empty() {
@@ -38,7 +82,7 @@ async fn main() {
         );
         println!(
             "Custom Commands:\n{}",
-            service_data
+            service
                 .commands
                 .iter()
                 .map(|c| format!("- {}", c.name.clone()))
@@ -49,22 +93,19 @@ async fn main() {
     }
 
     // make sure required containers are running
-    containers::ensure_running(&service_data.containers).await;
-
-    // parse the args
-    let command_set: argust::ArgContext = argust::parse_args(args.iter(), None);
+    containers::ensure_running(&service.containers).await;
 
     // if a command was given, try to match it to the config defined
-    if let Some(command) = command_set.args.first() {
-        for cmd in &service_data.commands {
+    if let Some(command) = args.first() {
+        for cmd in &service.commands {
             if cmd.name == *command {
                 // try to fetch an environment
                 let env =
-                    fetch_environment(cmd.environment.clone().as_str(), &service_data.environments)
+                    fetch_environment(cmd.environment.clone().as_str(), &service.environments)
                         .unwrap_or(Environment::new_empty());
 
                 // make sure required builds have run successfully
-                if !build::ensure_build(&cmd, &service_data.build, &env) {
+                if !build::ensure_build(&cmd, &service.build, &env) {
                     return;
                 }
 
@@ -76,7 +117,7 @@ async fn main() {
 
                 if cmd.capture_all {
                     // Construct the command to be executed
-                    let given_args = env::args().skip(2).collect::<Vec<String>>();
+                    let given_args = args.iter().cloned().skip(1).collect::<Vec<String>>();
 
                     for shell_cmd in &cmd.shell {
                         let _ = shell::exec(
