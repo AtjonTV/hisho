@@ -71,12 +71,22 @@ async fn main() {
         return;
     }
 
-    // remove --file if exists
-    command_set.long_params.remove("service:file");
+    // remove service consumed arguments
+    if !command_set.long_params.is_empty() {
+        let mut idx_to_remove = vec![];
+        for (_, param) in command_set.long_params.iter().enumerate() {
+            if param.0.starts_with("service:") {
+                idx_to_remove.push(param.0.clone());
+            }
+        }
+        for idx in idx_to_remove.iter().rev() {
+            command_set.long_params.remove(idx);
+        }
+    }
     if args.len() > 0 {
         let mut idx_to_remove = vec![];
         for i in 0..args.len() {
-            if args[i].starts_with("--service:file") {
+            if args[i].starts_with("--service:") {
                 idx_to_remove.push(i);
             }
         }
