@@ -21,7 +21,7 @@ mod template;
 async fn main() {
     let version = env!("CARGO_PKG_VERSION");
     println!("Service Helper v{} by Thomas Obernosterer", version);
-    let default_service_file = "service2.ron";
+    let default_service_file = "service.ron";
 
     // remove the program name from the arguments
     let mut args: Vec<String> = env::args().skip(1).collect();
