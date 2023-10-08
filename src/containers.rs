@@ -15,7 +15,7 @@ pub async fn ensure_running(containers: &Containers) {
         if let Ok(docker) = docker_con {
             let mut filters = ContainerFilters::new();
             containers.iter().for_each(|c| {
-                if c.required {
+                if !c.name.is_empty() {
                     filters.name(c.name.as_str());
                 }
             });

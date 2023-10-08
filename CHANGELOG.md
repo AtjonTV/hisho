@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Fixed
+* when a container had an empty name, all the existing and stopped containers where started
+
 <!--
 ### Added
 ### Changed

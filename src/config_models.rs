@@ -35,8 +35,6 @@ pub type Environments = Vec<Environment>;
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Container {
     pub name: String,
-    #[serde(default)]
-    pub required: bool,
 }
 pub type Containers = Vec<Container>;
 
