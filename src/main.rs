@@ -100,7 +100,7 @@ async fn main() {
     // if no arguments have been given
     if args.is_empty() {
         println!(
-            "Usage: {} <command> [args]\n",
+            "Usage: {} <command> [args]",
             env::args().take(1).collect::<Vec<String>>().join(" ")
         );
         println!(
@@ -118,10 +118,13 @@ async fn main() {
     // make sure required containers are running
     containers::ensure_running(&service.containers).await;
 
+    let mut command_found = false;
+
     // if a command was given, try to match it to the config defined
     if let Some(command) = args.first() {
         for cmd in &service.commands {
             if cmd.name == *command {
+                command_found = true;
                 // try to fetch an environment
                 let env =
                     fetch_environment(cmd.environment.clone().as_str(), &service.environments)
@@ -178,5 +181,22 @@ async fn main() {
                 }
             }
         }
+    }
+
+    if !command_found {
+        println!(
+            "Usage: {} <command> [args]",
+            env::args().take(1).collect::<Vec<String>>().join(" ")
+        );
+        println!(
+            "Custom Commands:\n{}",
+            service
+                .commands
+                .iter()
+                .map(|c| format!("- {}", c.name.clone()))
+                .collect::<Vec<String>>()
+                .join("\n")
+        );
+        return;
     }
 }
