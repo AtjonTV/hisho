@@ -12,6 +12,7 @@ allow_unsafe_command_templates = []
 argust = "0.0.3"
 dockworker = "0.3.0"
 dotenv-parser = "0.1.3"
+glob = { version = "0.3.1", features = [] }
 liquid = "0.26.4"
 ron = "0.8.1"
 serde = { version = "1", features = ["derive"] }

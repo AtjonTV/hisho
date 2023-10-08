@@ -3,6 +3,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+use std::collections::HashMap;
 use crate::config_models::{BuildStep, BuildSteps, Command, Environment, Process};
 use crate::template::TemplateVariables;
 use crate::{shell, template};
@@ -91,5 +92,32 @@ fn create_shell_from_steps(steps: &BuildSteps, vars: &TemplateVariables) -> Vec<
 }
 
 fn create_shell_from_step(step: &BuildStep, vars: &TemplateVariables) -> Option<Process> {
-    template::render_process(&step.shell, vars.as_value())
+    let mut template_vars = vars.clone();
+    if !step.input_files.is_empty() {
+        template_vars.insert("build", create_build_vars(step));
+    }
+    template::render_process(&step.shell, template_vars.as_value())
+}
+
+fn create_build_vars(step: &BuildStep) -> HashMap<String, String> {
+    let mut result: HashMap<String, String> = HashMap::new();
+    result.insert("input_files".to_string(), resolve_files_from_globs(&step.input_files).join(" "));
+    result
+}
+
+fn resolve_files_from_globs(globs: &Vec<String>) -> Vec<String> {
+    let mut results: Vec<String> = Vec::new();
+    for glob_str in globs {
+        let matches = glob::glob(glob_str);
+        if let Ok(paths) = matches {
+            for path in paths {
+                if let Ok(path_buf) = path {
+                    if let Some(path_str) = path_buf.as_path().to_str() {
+                        results.push(path_str.to_string());
+                    }
+                }
+            }
+        }
+    }
+    results
 }

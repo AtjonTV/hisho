@@ -47,8 +47,9 @@ Service(
       name: "render-template",
       shell: Process(
         command: "echo",
-        args: ["{{env.FIRST}}"]
+        args: ["compile", "{{build.input_files}}"]
       ),
+      input_files: ["src/*.rs"]
     ),
     BuildStep(
       name: "build",

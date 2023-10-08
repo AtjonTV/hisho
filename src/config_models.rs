@@ -69,5 +69,7 @@ pub struct BuildStep {
     pub shell: Process,
     #[serde(default)]
     pub depends_on: Vec<String>,
+    #[serde(default)]
+    pub input_files: Vec<String>,
 }
 pub type BuildSteps = Vec<BuildStep>;
