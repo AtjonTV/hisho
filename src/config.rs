@@ -21,7 +21,11 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
         }
     }
     // Create a new environments, without the current environment
-    let new_environments = environments.iter().filter(|env| env.name != environment).cloned().collect::<Vec<Environment>>();
+    let new_environments = environments
+        .iter()
+        .filter(|env| env.name != environment)
+        .cloned()
+        .collect::<Vec<Environment>>();
 
     if found_env.is_none() {
         if !environment.is_empty() {

@@ -3,8 +3,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use std::{env, fs};
 use ron::error::SpannedResult;
+use std::{env, fs};
 
 use crate::config::fetch_environment;
 use crate::config_models::{Environment, Process, Service};
@@ -45,16 +45,29 @@ async fn main() {
     let mut command_set: argust::ArgContext = argust::parse_args(args.iter(), None);
 
     // try to get file name from -f, and default to default_service_file if -f not given or empty
-    let service_file = command_set.long_params.get("service:file").unwrap_or(&None).clone().unwrap_or(default_service_file.to_string());
+    let service_file = command_set
+        .long_params
+        .get("service:file")
+        .unwrap_or(&None)
+        .clone()
+        .unwrap_or(default_service_file.to_string());
 
     let data_from_file = fs::read_to_string(service_file.as_str());
     if let Err(e) = data_from_file {
-        eprintln!("Service: Could not read service file '{}': {:?}", service_file, e.to_string());
+        eprintln!(
+            "Service: Could not read service file '{}': {:?}",
+            service_file,
+            e.to_string()
+        );
         return;
     }
     let service_data: SpannedResult<Service> = ron::from_str(data_from_file.unwrap().as_str());
     if let Err(e) = service_data {
-        eprintln!("Service: Could not parse service file '{}': {:?}", service_file, e.to_string());
+        eprintln!(
+            "Service: Could not parse service file '{}': {:?}",
+            service_file,
+            e.to_string()
+        );
         return;
     }
 

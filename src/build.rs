@@ -3,10 +3,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use std::collections::HashMap;
 use crate::config_models::{BuildStep, BuildSteps, Command, Environment, Process};
 use crate::template::TemplateVariables;
 use crate::{shell, template};
+use std::collections::HashMap;
 
 pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) -> bool {
     if !cmd.depends_on_build.is_empty() {
@@ -61,7 +61,11 @@ fn find_build_steps(wanted_steps: &Vec<String>, build_steps: &BuildSteps) -> Bui
                 steps.push(step.clone());
 
                 // Create a new build_steps, without the current step
-                let new_build_steps = build_steps.iter().filter(|s| !s.name.eq(wanted_step)).cloned().collect::<BuildSteps>();
+                let new_build_steps = build_steps
+                    .iter()
+                    .filter(|s| !s.name.eq(wanted_step))
+                    .cloned()
+                    .collect::<BuildSteps>();
 
                 if !step.depends_on.is_empty() {
                     let parent_steps = find_build_steps(&step.depends_on, &new_build_steps);
@@ -101,7 +105,10 @@ fn create_shell_from_step(step: &BuildStep, vars: &TemplateVariables) -> Option<
 
 fn create_build_vars(step: &BuildStep) -> HashMap<String, String> {
     let mut result: HashMap<String, String> = HashMap::new();
-    result.insert("input_files".to_string(), resolve_files_from_globs(&step.input_files).join(" "));
+    result.insert(
+        "input_files".to_string(),
+        resolve_files_from_globs(&step.input_files).join(" "),
+    );
     result
 }
 
