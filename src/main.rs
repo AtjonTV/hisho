@@ -31,13 +31,7 @@ async fn main() {
 
     // if no arguments have been given and the default service file does not exist
     if args.is_empty() && !default_file_exists {
-        println!(
-            "Usage: {} <command> [args]",
-            env::args().take(1).collect::<Vec<String>>().join(" ")
-        );
-        println!(
-            "Arguments:\n--service:file\tSpecify a .ron file to load, tries to load '{}' by default", default_service_file
-        );
+        print_help(None, Some(default_service_file));
         return;
     }
 
@@ -99,19 +93,7 @@ async fn main() {
 
     // if no arguments have been given
     if args.is_empty() {
-        println!(
-            "Usage: {} <command> [args]",
-            env::args().take(1).collect::<Vec<String>>().join(" ")
-        );
-        println!(
-            "Custom Commands:\n{}",
-            service
-                .commands
-                .iter()
-                .map(|c| format!("- {}", c.name.clone()))
-                .collect::<Vec<String>>()
-                .join("\n")
-        );
+        print_help(Some(&service), None);
         return;
     }
 
@@ -184,19 +166,30 @@ async fn main() {
     }
 
     if !command_found {
+        print_help(Some(&service), None);
+        return;
+    }
+}
+
+fn print_help(service: Option<&Service>, service_file: Option<&str>) {
+    println!(
+        "Usage: {} <command> [args]",
+        env::args().take(1).collect::<Vec<String>>().join(" ")
+    );
+    if service_file.is_some() {
         println!(
-            "Usage: {} <command> [args]",
-            env::args().take(1).collect::<Vec<String>>().join(" ")
+            "Arguments:\n--service:file\tSpecify a .ron file to load, tries to load '{}' by default", service_file.unwrap()
         );
+    }
+    if service.is_some() {
         println!(
             "Custom Commands:\n{}",
-            service
+            service.unwrap()
                 .commands
                 .iter()
                 .map(|c| format!("- {}", c.name.clone()))
                 .collect::<Vec<String>>()
                 .join("\n")
         );
-        return;
     }
 }
