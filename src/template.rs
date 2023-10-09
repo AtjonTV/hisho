@@ -82,7 +82,7 @@ pub fn render_process(process: &Process, args: Object) -> Option<Process> {
             return None;
         }
     }
-    return if cfg!(feature = "allow_unsafe_command_templates") {
+    if cfg!(feature = "allow_unsafe_command_templates") {
         // TODO: If we add system environment variables, they MUST be removed here for security reasons!
         if let Some(command) = render_string(process.command.clone(), &args) {
             Some(Process {
@@ -97,5 +97,84 @@ pub fn render_process(process: &Process, args: Object) -> Option<Process> {
             command: process.command.clone(),
             args: rendered_proc_args,
         })
-    };
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn render_valid_string_template() {
+        let template = "Hello, {{name}}!".to_string();
+        let data = liquid::object!({
+            "name": "John"
+        });
+        assert_eq!(render_string(template, &data), Some("Hello, John!".to_string()));
+    }
+
+    #[test]
+    fn fail_with_invalid_string_template() {
+        let template = "Hello, {{e.name}}!".to_string();
+        let data = liquid::object!({
+            "name": "John"
+        });
+        assert_eq!(render_string(template, &data), None);
+    }
+
+    #[test]
+    fn render_valid_environment_template() {
+        let mut env = HashMap::new();
+        env.insert("hello_name".to_string(), "Hello, {{env.name}}!".to_string());
+        env.insert("name".to_string(), "John".to_string());
+        env.insert("world".to_string(), "world".to_string());
+        env.insert("hello_world".to_string(), "Hello, {{env.world}}!".to_string());
+
+        let rendered = render_environment(env);
+        assert_eq!(rendered.get("hello_name"), Some(&"Hello, John!".to_string()));
+        assert_eq!(rendered.get("hello_world"), Some(&"Hello, world!".to_string()));
+    }
+
+    #[test]
+    fn render_valid_process_template() {
+        let mut env = HashMap::new();
+        env.insert("name".to_string(), "John".to_string());
+
+        let process = Process {
+            command: "echo".to_string(),
+            args: vec!["Hello, {{env.name}}!".to_string()]
+        };
+
+        let mut vars = TemplateVariables::new();
+        vars.insert("env", env);
+
+        let rendered = render_process(&process, vars.as_value());
+        if let Some(rendered_process) = rendered {
+            assert_eq!(rendered_process.command, "echo".to_string());
+            assert_eq!(rendered_process.args[0], "Hello, John!".to_string());
+        } else {
+            assert!(false);
+        }
+    }
+
+    #[test]
+    #[cfg(feature = "allow_unsafe_command_templates")]
+    fn render_valid_process_template_with_unsafe_command_templates() {
+        let mut env = HashMap::new();
+        env.insert("bin_dir".to_string(), "/usr/local/bin".to_string());
+
+        let process = Process {
+            command: "{{env.bin_dir}}/echo".to_string(),
+            args: vec![]
+        };
+        let rendered = render_process(&process, liquid::object!({
+            "env": env
+        }));
+        if let Some(rendered_process) = rendered {
+            assert_eq!(rendered_process.command, "/usr/local/bin/echo".to_string());
+        } else {
+            assert!(false);
+        }
+    }
 }

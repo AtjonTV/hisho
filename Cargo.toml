@@ -7,6 +7,7 @@ edition = "2021"
 
 [features]
 allow_unsafe_command_templates = []
+all = ["allow_unsafe_command_templates"]
 
 [dependencies]
 argust = "0.0.3"
