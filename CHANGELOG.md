@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Changed
+* **BREAKING**: Renamed `Service` to `Project` in configuration files.
+
 ### Fixed
 * when a container had an empty name, all the existing and stopped containers where started
 

@@ -7,7 +7,7 @@ use ron::error::SpannedResult;
 use std::{env, fs};
 
 use crate::config::fetch_environment;
-use crate::config_models::{Environment, Process, Service};
+use crate::config_models::{Environment, Process, Project};
 use crate::template::TemplateVariables;
 
 mod build;
@@ -55,8 +55,8 @@ async fn main() {
         );
         return;
     }
-    let service_data: SpannedResult<Service> = ron::from_str(data_from_file.unwrap().as_str());
-    if let Err(e) = service_data {
+    let project_data: SpannedResult<Project> = ron::from_str(data_from_file.unwrap().as_str());
+    if let Err(e) = project_data {
         eprintln!(
             "Service: Could not parse service file '{}': {:?}",
             service_file,
@@ -89,31 +89,31 @@ async fn main() {
         }
     }
 
-    let service = service_data.unwrap();
+    let project = project_data.unwrap();
 
     // if no arguments have been given
     if args.is_empty() {
-        print_help(Some(&service), None);
+        print_help(Some(&project), None);
         return;
     }
 
     // make sure required containers are running
-    containers::ensure_running(&service.containers).await;
+    containers::ensure_running(&project.containers).await;
 
     let mut command_found = false;
 
     // if a command was given, try to match it to the config defined
     if let Some(command) = args.first() {
-        for cmd in &service.commands {
+        for cmd in &project.commands {
             if cmd.name == *command {
                 command_found = true;
                 // try to fetch an environment
                 let env =
-                    fetch_environment(cmd.environment.clone().as_str(), &service.environments)
+                    fetch_environment(cmd.environment.clone().as_str(), &project.environments)
                         .unwrap_or(Environment::new_empty());
 
                 // make sure required builds have run successfully
-                if !build::ensure_build(&cmd, &service.build, &env) {
+                if !build::ensure_build(&cmd, &project.build, &env) {
                     return;
                 }
 
@@ -166,12 +166,12 @@ async fn main() {
     }
 
     if !command_found {
-        print_help(Some(&service), None);
+        print_help(Some(&project), None);
         return;
     }
 }
 
-fn print_help(service: Option<&Service>, service_file: Option<&str>) {
+fn print_help(project: Option<&Project>, service_file: Option<&str>) {
     println!(
         "Usage: {} <command> [args]",
         env::args().take(1).collect::<Vec<String>>().join(" ")
@@ -181,10 +181,10 @@ fn print_help(service: Option<&Service>, service_file: Option<&str>) {
             "Arguments:\n--service:file\tSpecify a .ron file to load, tries to load '{}' by default", service_file.unwrap()
         );
     }
-    if service.is_some() {
+    if project.is_some() {
         println!(
             "Custom Commands:\n{}",
-            service.unwrap()
+            project.unwrap()
                 .commands
                 .iter()
                 .map(|c| format!("- {}", c.name.clone()))

@@ -8,7 +8,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct Service {
+pub struct Project {
     pub name: String,
     #[serde(default)]
     pub environments: Environments,
