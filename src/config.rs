@@ -37,7 +37,7 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
     let mut current_env: HashMap<String, String> = HashMap::new();
     let env = found_env.unwrap();
 
-    if env.inherits.len() != 0 {
+    if !env.inherits.is_empty() {
         let mut parent_envs: Vec<Environment> = Vec::new();
         for parent_env in &env.inherits {
             if let Some(mut parent) = fetch_environment(parent_env, &new_environments) {
@@ -63,7 +63,7 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
     }
 
     let rendered_env = template::render_environment(current_env);
-    return Some(Environment::new("current", Vec::new(), rendered_env));
+    Some(Environment::new("current", Vec::new(), rendered_env))
 }
 
 fn load_env_from_file(sources: &Vec<String>, out_env: &mut HashMap<String, String>) {
@@ -86,35 +86,31 @@ fn load_env_from_file(sources: &Vec<String>, out_env: &mut HashMap<String, Strin
 
 impl Environment {
     pub fn new_empty() -> Environment {
-        return Environment {
+        Environment {
             name: "empty".to_string(),
             inherits: Vec::new(),
             values: HashMap::new(),
             sources: Vec::new(),
-        };
+        }
     }
     pub fn new(name: &str, inherits: Vec<String>, values: HashMap<String, String>) -> Environment {
-        return Environment {
+        Environment {
             name: name.to_string(),
             inherits,
             values,
             sources: Vec::new(),
-        };
+        }
     }
 }
 
 impl Process {
     pub fn new(command: String, args: Vec<String>) -> Process {
-        return Process { command, args };
+        Process { command, args }
     }
 }
 
 impl PartialEq for BuildStep {
     fn eq(&self, other: &Self) -> bool {
         self.name.eq(&other.name)
-    }
-
-    fn ne(&self, other: &Self) -> bool {
-        !self.name.eq(&other.name)
     }
 }

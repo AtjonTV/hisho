@@ -15,7 +15,7 @@ pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) 
         let mut vars = TemplateVariables::new();
         vars.insert("env", env.values.clone());
 
-        let build_steps = get_build_steps(&cmd.depends_on_build, &build_steps, &vars);
+        let build_steps = get_build_steps(&cmd.depends_on_build, build_steps, &vars);
         for step in build_steps {
             if let Some(rendered_command) = template::render_process(&step.1, vars.as_value()) {
                 println!("\tRunning build step: {}", step.0);
@@ -23,11 +23,9 @@ pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) 
                 if result.is_err() {
                     eprintln!("\tFailed to run Build Step!");
                     return false;
-                } else {
-                    if !result.unwrap().success() {
-                        eprintln!("\tBuild Step returned non-zero exit code!");
-                        return false;
-                    }
+                } else if !result.unwrap().success() {
+                    eprintln!("\tBuild Step returned non-zero exit code!");
+                    return false;
                 }
             } else {
                 eprintln!("\tFailed to render Build Step!");
@@ -109,10 +107,7 @@ fn create_build_vars(step: &BuildStep) -> HashMap<String, String> {
         "input_files".to_string(),
         resolve_files_from_globs(&step.input_files).join(" "),
     );
-    result.insert(
-        "name".to_string(),
-        step.name.clone(),
-    );
+    result.insert("name".to_string(), step.name.clone());
     result
 }
 
@@ -121,11 +116,9 @@ fn resolve_files_from_globs(globs: &Vec<String>) -> Vec<String> {
     for glob_str in globs {
         let matches = glob::glob(glob_str);
         if let Ok(paths) = matches {
-            for path in paths {
-                if let Ok(path_buf) = path {
-                    if let Some(path_str) = path_buf.as_path().to_str() {
-                        results.push(path_str.to_string());
-                    }
+            for path in paths.flatten() {
+                if let Some(path_str) = path.as_path().to_str() {
+                    results.push(path_str.to_string());
                 }
             }
         }

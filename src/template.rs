@@ -47,7 +47,7 @@ pub fn render_string(template: String, data: &Object) -> Option<String> {
             tp_engine.err().unwrap()
         );
     }
-    return None;
+    None
 }
 
 pub fn render_environment(env: HashMap<String, String>) -> HashMap<String, String> {
@@ -84,14 +84,10 @@ pub fn render_process(process: &Process, args: Object) -> Option<Process> {
     }
     if cfg!(feature = "allow_unsafe_command_templates") {
         // TODO: If we add system environment variables, they MUST be removed here for security reasons!
-        if let Some(command) = render_string(process.command.clone(), &args) {
-            Some(Process {
-                command,
-                args: rendered_proc_args,
-            })
-        } else {
-            None
-        }
+        render_string(process.command.clone(), &args).map(|command| Process {
+            command,
+            args: rendered_proc_args,
+        })
     } else {
         Some(Process {
             command: process.command.clone(),
@@ -99,7 +95,6 @@ pub fn render_process(process: &Process, args: Object) -> Option<Process> {
         })
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -111,7 +106,10 @@ mod tests {
         let data = liquid::object!({
             "name": "John"
         });
-        assert_eq!(render_string(template, &data), Some("Hello, John!".to_string()));
+        assert_eq!(
+            render_string(template, &data),
+            Some("Hello, John!".to_string())
+        );
     }
 
     #[test]
@@ -129,11 +127,20 @@ mod tests {
         env.insert("hello_name".to_string(), "Hello, {{env.name}}!".to_string());
         env.insert("name".to_string(), "John".to_string());
         env.insert("world".to_string(), "world".to_string());
-        env.insert("hello_world".to_string(), "Hello, {{env.world}}!".to_string());
+        env.insert(
+            "hello_world".to_string(),
+            "Hello, {{env.world}}!".to_string(),
+        );
 
         let rendered = render_environment(env);
-        assert_eq!(rendered.get("hello_name"), Some(&"Hello, John!".to_string()));
-        assert_eq!(rendered.get("hello_world"), Some(&"Hello, world!".to_string()));
+        assert_eq!(
+            rendered.get("hello_name"),
+            Some(&"Hello, John!".to_string())
+        );
+        assert_eq!(
+            rendered.get("hello_world"),
+            Some(&"Hello, world!".to_string())
+        );
     }
 
     #[test]
@@ -143,7 +150,7 @@ mod tests {
 
         let process = Process {
             command: "echo".to_string(),
-            args: vec!["Hello, {{env.name}}!".to_string()]
+            args: vec!["Hello, {{env.name}}!".to_string()],
         };
 
         let mut vars = TemplateVariables::new();
@@ -166,11 +173,14 @@ mod tests {
 
         let process = Process {
             command: "{{env.bin_dir}}/echo".to_string(),
-            args: vec![]
+            args: vec![],
         };
-        let rendered = render_process(&process, liquid::object!({
-            "env": env
-        }));
+        let rendered = render_process(
+            &process,
+            liquid::object!({
+                "env": env
+            }),
+        );
         if let Some(rendered_process) = rendered {
             assert_eq!(rendered_process.command, "/usr/local/bin/echo".to_string());
         } else {

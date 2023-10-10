@@ -77,10 +77,10 @@ async fn main() {
             command_set.long_params.remove(idx);
         }
     }
-    if args.len() > 0 {
+    if !args.is_empty() {
         let mut idx_to_remove = vec![];
-        for i in 0..args.len() {
-            if args[i].starts_with("--service:") {
+        for (i, arg) in args.iter().enumerate() {
+            if arg.starts_with("--service:") {
                 idx_to_remove.push(i);
             }
         }
@@ -113,7 +113,7 @@ async fn main() {
                         .unwrap_or(Environment::new_empty());
 
                 // make sure required builds have run successfully
-                if !build::ensure_build(&cmd, &project.build, &env) {
+                if !build::ensure_build(cmd, &project.build, &env) {
                     return;
                 }
 
@@ -125,7 +125,7 @@ async fn main() {
 
                 if cmd.capture_all {
                     // Construct the command to be executed
-                    let given_args = args.iter().cloned().skip(1).collect::<Vec<String>>();
+                    let given_args = args.iter().skip(1).cloned().collect::<Vec<String>>();
 
                     for shell_cmd in &cmd.shell {
                         let _ = shell::exec(
@@ -184,7 +184,8 @@ fn print_help(project: Option<&Project>, service_file: Option<&str>) {
     if project.is_some() {
         println!(
             "Custom Commands:\n{}",
-            project.unwrap()
+            project
+                .unwrap()
                 .commands
                 .iter()
                 .map(|c| format!("- {}", c.name.clone()))
