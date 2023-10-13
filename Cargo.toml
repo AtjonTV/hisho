@@ -14,6 +14,8 @@ dockworker = "0.3.0"
 dotenv-parser = "0.1.3"
 glob = { version = "0.3.1", features = [] }
 liquid = "0.26.4"
+owo-colors = { version = "3.5.0", features = ["supports-colors"] }
 ron = "0.8.1"
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "1.0.0", features = ["rt", "rt-multi-thread", "macros"] }
+once_cell = "1.18.0"

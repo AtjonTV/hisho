@@ -7,7 +7,7 @@ use std::collections::HashMap;
 use std::fs;
 
 use crate::config_models::{BuildStep, Environment, Environments, Process};
-use crate::template;
+use crate::{log, template};
 
 pub fn fetch_environment(environment: &str, environments: &Environments) -> Option<Environment> {
     if environment.is_empty() {
@@ -29,7 +29,7 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
 
     if found_env.is_none() {
         if !environment.is_empty() {
-            println!("Hisho: Could not find environment: {}", environment);
+            log::error(format!("Could not find environment: {}", environment));
         }
         return None;
     }
@@ -75,10 +75,10 @@ fn load_env_from_file(sources: &Vec<String>, out_env: &mut HashMap<String, Strin
                         out_env.insert(k, v);
                     }
                 } else {
-                    println!("Hisho: Could not parse environment file {}", path);
+                    log::error(format!("Could not parse environment file {}", path));
                 }
             } else {
-                println!("Hisho: Could not read environment file: {}", path);
+                log::error(format!("Could not read environment file: {}", path));
             }
         }
     }

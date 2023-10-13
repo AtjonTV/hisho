@@ -8,11 +8,11 @@ use dockworker::container::ContainerFilters;
 use dockworker::Docker;
 
 use crate::config_models::{Containers, Environment};
-use crate::template;
+use crate::{log, template};
 
 pub async fn ensure_running(containers: &Containers, env: &Environment) -> bool {
     if !containers.is_empty() {
-        println!("Hisho: Checking Container dependencies ..");
+        log::print("Checking Container dependencies ..".to_string());
         let mut vars = template::TemplateVariables::new();
         vars.insert("env", env.values.clone());
         let docker_con = Docker::connect_with_defaults();
@@ -25,7 +25,7 @@ pub async fn ensure_running(containers: &Containers, env: &Environment) -> bool 
                         required_containers.insert(name.clone());
                         filters.name(name.as_str());
                     } else {
-                        eprintln!("\tFailed to render container name: {}", c.name);
+                        log::error(format!("\tFailed to render container name: {}", c.name));
                         return false;
                     }
                 }
@@ -42,32 +42,32 @@ pub async fn ensure_running(containers: &Containers, env: &Environment) -> bool 
                     }
                 }
                 if !missing_containers.is_empty() {
-                    eprintln!(
+                    log::error(format!(
                         "\tMissing containers: {}",
                         missing_containers.iter().map(|c| c.to_string()).collect::<Vec<String>>().join(", ")
-                    );
+                    ));
                     return false;
                 }
                 for container in containers {
-                    println!("\tContainer {:?} is {}", container.Names, container.State);
+                    log::print(format!("\tContainer {:?} is {}", container.Names, container.State));
                     if container.State != "running" {
                         if let Err(e) = docker.start_container(container.Id.as_str()).await {
-                            eprintln!("\tCould not start container {:?}: {:?}", container.Names, e);
+                            log::error(format!("\tCould not start container {:?}: {:?}", container.Names, e));
                             return false;
                         } else {
-                            println!("\tStarted container {:?}", container.Names);
+                            log::print(format!("\tStarted container {:?}", container.Names));
                         }
                     }
                 }
             } else {
-                println!("\tCannot find required containers");
+                log::error("\tCannot find required containers".to_string());
                 return false;
             }
         } else {
-            eprintln!("Hisho: Could not connect to docker daemon");
+            log::error("Could not connect to docker daemon".to_string());
             return false;
         }
-        println!();
+        log::print(String::new());
     }
     true
 }

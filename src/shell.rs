@@ -7,6 +7,7 @@ use std::io;
 use std::process::ExitStatus;
 
 use crate::config_models::{Environment, Process};
+use crate::log;
 
 pub fn exec(process: &Process, env: &Environment) -> io::Result<ExitStatus> {
     // execute the command in /bin/sh
@@ -17,18 +18,18 @@ pub fn exec(process: &Process, env: &Environment) -> io::Result<ExitStatus> {
     // Check if the command succeeded
     let proc_result = proc_command.status();
     if let Ok(output) = &proc_result {
-        println!(
-            "Hisho: Command '{} {}' executed. ({})",
+        log::print(format!(
+            "Command '{} {}' executed. ({})",
             process.command,
             process.args.join(" "),
             output
-        );
+        ));
     } else {
-        println!(
-            "Hisho: Could not execute command: {} {}",
+        log::error(format!(
+            "Could not execute command: {} {}",
             process.command,
             process.args.join(" ")
-        );
+        ));
     }
     proc_result
 }

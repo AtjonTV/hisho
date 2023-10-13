@@ -16,11 +16,12 @@ mod config_models;
 mod containers;
 mod shell;
 mod template;
+mod log;
 
 #[tokio::main]
 async fn main() {
     let version = env!("CARGO_PKG_VERSION");
-    println!("Hisho v{} by Thomas Obernosterer", version);
+    log::print(format!("Hisho v{} by Thomas Obernosterer", version));
     let default_service_file = "hisho.ron";
 
     // remove the program name from the arguments
@@ -48,20 +49,20 @@ async fn main() {
 
     let data_from_file = fs::read_to_string(service_file.as_str());
     if let Err(e) = data_from_file {
-        eprintln!(
-            "Hisho: Could not read service file '{}': {:?}",
+        log::error(format!(
+            "Could not read service file '{}': {:?}",
             service_file,
             e.to_string()
-        );
+        ));
         return;
     }
     let project_data: SpannedResult<Project> = ron::from_str(data_from_file.unwrap().as_str());
     if let Err(e) = project_data {
-        eprintln!(
-            "Hisho: Could not parse service file '{}': {:?}",
+        log::error(format!(
+            "Could not parse service file '{}': {:?}",
             service_file,
             e.to_string()
-        );
+        ));
         return;
     }
 
@@ -121,7 +122,7 @@ async fn main() {
 
                 // if there is no shell defined, do nothing and return
                 if cmd.shell.is_empty() {
-                    println!("Hisho: No shell, nothing to do. Exiting..");
+                    log::print("No shell, nothing to do. Exiting..".to_string());
                     return;
                 }
 
@@ -174,17 +175,17 @@ async fn main() {
 }
 
 fn print_help(project: Option<&Project>, service_file: Option<&str>) {
-    println!(
+    log::print(format!(
         "Usage: {} <command> [args]",
         env::args().take(1).collect::<Vec<String>>().join(" ")
-    );
+    ));
     if service_file.is_some() {
-        println!(
+        log::print(format!(
             "Arguments:\n--hisho:file\tSpecify a .ron file to load, tries to load '{}' by default", service_file.unwrap()
-        );
+        ));
     }
     if project.is_some() {
-        println!(
+        log::print(format!(
             "Custom Commands:\n{}",
             project
                 .unwrap()
@@ -193,6 +194,6 @@ fn print_help(project: Option<&Project>, service_file: Option<&str>) {
                 .map(|c| format!("- {}", c.name.clone()))
                 .collect::<Vec<String>>()
                 .join("\n")
-        );
+        ));
     }
 }

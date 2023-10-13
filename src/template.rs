@@ -7,6 +7,7 @@ use liquid::Object;
 use std::collections::HashMap;
 
 use crate::config_models::Process;
+use crate::log;
 
 type TemplateVarMap = HashMap<String, HashMap<String, String>>;
 
@@ -36,16 +37,16 @@ pub fn render_string(template: String, data: &Object) -> Option<String> {
             if let Ok(rendered_value) = tp_value {
                 return Some(rendered_value);
             } else {
-                println!("Failed to render template: {}", tp_value.err().unwrap());
+                log::error(format!("Failed to render template: {}", tp_value.err().unwrap()));
             }
         } else {
-            println!("Failed to parse template: {}", tp_template.err().unwrap());
+            log::error(format!("Failed to parse template: {}", tp_template.err().unwrap()));
         }
     } else {
-        println!(
+        log::error(format!(
             "Failed to create template engine: {}",
             tp_engine.err().unwrap()
-        );
+        ));
     }
     None
 }

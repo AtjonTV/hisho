@@ -5,12 +5,12 @@
 
 use crate::config_models::{BuildStep, BuildSteps, Command, Environment, Process};
 use crate::template::TemplateVariables;
-use crate::{shell, template};
+use crate::{log, shell, template};
 use std::collections::HashMap;
 
 pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) -> bool {
     if !cmd.depends_on_build.is_empty() {
-        println!("Hisho: Checking Build dependencies ..");
+        log::print("Checking Build dependencies ..".to_string());
 
         let mut vars = TemplateVariables::new();
         vars.insert("env", env.values.clone());
@@ -18,21 +18,21 @@ pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) 
         let build_steps = get_build_steps(&cmd.depends_on_build, build_steps, &vars);
         for step in build_steps {
             if let Some(rendered_command) = template::render_process(&step.1, vars.as_value()) {
-                println!("\tRunning build step: {}", step.0);
+                log::print(format!("\tRunning build step: {}", step.0));
                 let result = shell::exec(&rendered_command, env);
                 if result.is_err() {
-                    eprintln!("\tFailed to run Build Step!");
+                    log::print("\tFailed to run Build Step!".to_string());
                     return false;
                 } else if !result.unwrap().success() {
-                    eprintln!("\tBuild Step returned non-zero exit code!");
+                    log::error("\tBuild Step returned non-zero exit code!".to_string());
                     return false;
                 }
             } else {
-                eprintln!("\tFailed to render Build Step!");
+                log::error("\tFailed to render Build Step!".to_string());
                 return false;
             }
         }
-        println!();
+        log::print(String::new());
     }
     true
 }
