@@ -8,8 +8,8 @@ use std::{env, fs};
 
 use crate::hisho::config::fetch_environment;
 use crate::hisho::config_models::{Environment, Process, Project};
-use crate::hisho::{build, containers, log, shell, template};
 use crate::hisho::template::TemplateVariables;
+use crate::hisho::{build, containers, log, shell, template};
 
 #[tokio::main]
 pub async fn cli_main() {

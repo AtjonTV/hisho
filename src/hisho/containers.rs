@@ -3,9 +3,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use std::collections::HashSet;
 use dockworker::container::ContainerFilters;
 use dockworker::Docker;
+use std::collections::HashSet;
 
 use crate::hisho::config_models::{Containers, Environment};
 use crate::hisho::{log, template};
@@ -44,15 +44,25 @@ pub async fn ensure_running(containers: &Containers, env: &Environment) -> bool 
                 if !missing_containers.is_empty() {
                     log::error(format!(
                         "\tMissing containers: {}",
-                        missing_containers.iter().map(|c| c.to_string()).collect::<Vec<String>>().join(", ")
+                        missing_containers
+                            .iter()
+                            .map(|c| c.to_string())
+                            .collect::<Vec<String>>()
+                            .join(", ")
                     ));
                     return false;
                 }
                 for container in containers {
-                    log::print(format!("\tContainer {:?} is {}", container.Names, container.State));
+                    log::print(format!(
+                        "\tContainer {:?} is {}",
+                        container.Names, container.State
+                    ));
                     if container.State != "running" {
                         if let Err(e) = docker.start_container(container.Id.as_str()).await {
-                            log::error(format!("\tCould not start container {:?}: {:?}", container.Names, e));
+                            log::error(format!(
+                                "\tCould not start container {:?}: {:?}",
+                                container.Names, e
+                            ));
                             return false;
                         } else {
                             log::print(format!("\tStarted container {:?}", container.Names));

@@ -4,10 +4,10 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 pub mod build;
+pub mod cli;
 pub mod config;
 pub mod config_models;
 pub mod containers;
+pub mod log;
 pub mod shell;
 pub mod template;
-pub mod log;
-pub mod cli;
