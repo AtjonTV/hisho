@@ -7,7 +7,7 @@ use std::io;
 use std::process::ExitStatus;
 
 use crate::hisho::config_models::{Environment, Process};
-use crate::log;
+use crate::hisho::log;
 
 pub fn exec(process: &Process, env: &Environment) -> io::Result<ExitStatus> {
     // execute the command in /bin/sh
