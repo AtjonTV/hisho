@@ -20,8 +20,8 @@ mod template;
 #[tokio::main]
 async fn main() {
     let version = env!("CARGO_PKG_VERSION");
-    println!("Service Helper v{} by Thomas Obernosterer", version);
-    let default_service_file = "service.ron";
+    println!("Hisho v{} by Thomas Obernosterer", version);
+    let default_service_file = "hisho.ron";
 
     // remove the program name from the arguments
     let mut args: Vec<String> = env::args().skip(1).collect();
@@ -41,7 +41,7 @@ async fn main() {
     // try to get file name from -f, and default to default_service_file if -f not given or empty
     let service_file = command_set
         .long_params
-        .get("service:file")
+        .get("hisho:file")
         .unwrap_or(&None)
         .clone()
         .unwrap_or(default_service_file.to_string());
@@ -49,7 +49,7 @@ async fn main() {
     let data_from_file = fs::read_to_string(service_file.as_str());
     if let Err(e) = data_from_file {
         eprintln!(
-            "Service: Could not read service file '{}': {:?}",
+            "Hisho: Could not read service file '{}': {:?}",
             service_file,
             e.to_string()
         );
@@ -58,7 +58,7 @@ async fn main() {
     let project_data: SpannedResult<Project> = ron::from_str(data_from_file.unwrap().as_str());
     if let Err(e) = project_data {
         eprintln!(
-            "Service: Could not parse service file '{}': {:?}",
+            "Hisho: Could not parse service file '{}': {:?}",
             service_file,
             e.to_string()
         );
@@ -69,7 +69,7 @@ async fn main() {
     if !command_set.long_params.is_empty() {
         let mut idx_to_remove = vec![];
         for (_, param) in command_set.long_params.iter().enumerate() {
-            if param.0.starts_with("service:") {
+            if param.0.starts_with("hisho:") {
                 idx_to_remove.push(param.0.clone());
             }
         }
@@ -80,7 +80,7 @@ async fn main() {
     if !args.is_empty() {
         let mut idx_to_remove = vec![];
         for (i, arg) in args.iter().enumerate() {
-            if arg.starts_with("--service:") {
+            if arg.starts_with("--hisho:") {
                 idx_to_remove.push(i);
             }
         }
@@ -119,7 +119,7 @@ async fn main() {
 
                 // if there is no shell defined, do nothing and return
                 if cmd.shell.is_empty() {
-                    println!("Service: No shell, nothing to do. Exiting..");
+                    println!("Hisho: No shell, nothing to do. Exiting..");
                     return;
                 }
 
@@ -178,7 +178,7 @@ fn print_help(project: Option<&Project>, service_file: Option<&str>) {
     );
     if service_file.is_some() {
         println!(
-            "Arguments:\n--service:file\tSpecify a .ron file to load, tries to load '{}' by default", service_file.unwrap()
+            "Arguments:\n--hisho:file\tSpecify a .ron file to load, tries to load '{}' by default", service_file.unwrap()
         );
     }
     if project.is_some() {

@@ -29,7 +29,7 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
 
     if found_env.is_none() {
         if !environment.is_empty() {
-            println!("Service: Could not find environment: {}", environment);
+            println!("Hisho: Could not find environment: {}", environment);
         }
         return None;
     }
@@ -75,10 +75,10 @@ fn load_env_from_file(sources: &Vec<String>, out_env: &mut HashMap<String, Strin
                         out_env.insert(k, v);
                     }
                 } else {
-                    println!("Service: Could not parse environment file {}", path);
+                    println!("Hisho: Could not parse environment file {}", path);
                 }
             } else {
-                println!("Service: Could not read environment file: {}", path);
+                println!("Hisho: Could not read environment file: {}", path);
             }
         }
     }

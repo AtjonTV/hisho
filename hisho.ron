@@ -1,10 +1,10 @@
 Project(
-  name: "service_helper",
+  name: "hisho",
   environments: [
     Environment(
       name: "parent",
       // sources are files, values from files are overwritten by the values defined in here
-      sources: ["service-parent.env"],
+      sources: ["hisho-parent.env"],
       // values, these override any variables from sources or inherits
       values: {
         "FOURTH": "4",
@@ -17,7 +17,7 @@ Project(
       // inherit gets all values from the parents, last parent has precedence
       inherits: ["parent"],
       // sources are files, values override parent values
-      sources: ["service-child.env"],
+      sources: ["hisho-child.env"],
       // values, again override any prior variables
       values: {
         "NINETH": "9",
@@ -92,7 +92,7 @@ Project(
       shell: [
         Process(
           command: "bash",
-          args: ["./service-env.sh"],
+          args: ["./hisho-env.sh"],
         ),
       ],
       environment: "child",
@@ -111,11 +111,20 @@ Project(
       shell: [
         Process(
           command: "target/x86_64-unknown-linux-musl/debug/service_helper",
-          args: ["{{env.run_command}}"]
+          args: ["{{arg.run_command}}"]
         ),
       ],
       environment: "test",
       depends_on_build: ["build"]
+    ),
+    Command(
+      name: "push",
+      shell: [
+        Process(command: "git", args: ["push"]),
+        Process(command: "git", args: ["push", "--tags"]),
+        Process(command: "git", args: ["push", "tabbygit"]),
+        Process(command: "git", args: ["push", "tabbygit", "--tags"]),
+      ]
     ),
   ]
 )

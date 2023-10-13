@@ -10,7 +10,7 @@ use crate::config_models::Containers;
 
 pub async fn ensure_running(containers: &Containers) {
     if !containers.is_empty() {
-        println!("Service: Checking Container dependencies ..");
+        println!("Hisho: Checking Container dependencies ..");
         let docker_con = Docker::connect_with_defaults();
         if let Ok(docker) = docker_con {
             let mut filters = ContainerFilters::new();

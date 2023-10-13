@@ -18,14 +18,14 @@ pub fn exec(process: &Process, env: &Environment) -> io::Result<ExitStatus> {
     let proc_result = proc_command.status();
     if let Ok(output) = &proc_result {
         println!(
-            "Service: Command '{} {}' executed. ({})",
+            "Hisho: Command '{} {}' executed. ({})",
             process.command,
             process.args.join(" "),
             output
         );
     } else {
         println!(
-            "Service: Could not execute command: {} {}",
+            "Hisho: Could not execute command: {} {}",
             process.command,
             process.args.join(" ")
         );

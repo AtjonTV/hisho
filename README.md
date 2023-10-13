@@ -1,18 +1,19 @@
-# Service-Helper
+# Hisho (秘書)
 
-Service-Helper is a utility tool for local development with dependencies like Docker containers.
+Hisho is a utility tool for local development with dependencies like Docker containers.
 
-## Note about self-usage
+## Features
 
-This tool was written for my own use, so expect this tool to be highly opinionated.  
-Also, it is my first rust program, so expect bugs, badly structured and un-optimized code.
+* Define Docker Containers that must be running, before any commands can be executed
+* Define Build Steps that need to succeed, before a command is executed
+* Configure environments for commands, these are separate from the system environment
+* Human editable configuration format using RON (Rust Object Notation) for our `service.ron` files.
 
-Only Linux on AMD64 is supported and tested on.  
-If you feel the need to port this tool to another platform, you can do so.  
-When changes to the code are needed that are non-breaking for my use case, I would be happy
-to merge those changes!
+## Supported Platforms
 
-Do not expect me to provide any kind of support, and read the code before running the tool!
+Hisho officially only supports Linux on AMD64 CPUs, being build with Rust 1.73+ and musl libc.
+
+While Hish tries to be platform agnostic, there is no guarantee that it works on other platforms.
 
 ## License
 
