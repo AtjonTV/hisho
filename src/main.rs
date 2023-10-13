@@ -97,9 +97,6 @@ async fn main() {
         return;
     }
 
-    // make sure required containers are running
-    containers::ensure_running(&project.containers).await;
-
     let mut command_found = false;
 
     // if a command was given, try to match it to the config defined
@@ -111,6 +108,11 @@ async fn main() {
                 let env =
                     fetch_environment(cmd.environment.clone().as_str(), &project.environments)
                         .unwrap_or(Environment::new_empty());
+
+                // make sure required containers are running
+                if !containers::ensure_running(&project.containers, &env).await {
+                    return;
+                }
 
                 // make sure required builds have run successfully
                 if !build::ensure_build(cmd, &project.build, &env) {

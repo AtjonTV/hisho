@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Changed
+* Container names can now be templated based on the command environment
+* Hisho exists when a container does not exist or can not be started
+
 <!--
 ### Added
 ### Changed

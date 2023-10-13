@@ -111,7 +111,7 @@ Project(
       shell: [
         Process(
           command: "target/x86_64-unknown-linux-musl/debug/hisho",
-          args: ["{{arg.run_command}}"]
+          args: ["{{env.run_command}}"]
         ),
       ],
       environment: "test",
