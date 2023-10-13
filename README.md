@@ -7,7 +7,7 @@ Hisho is a utility tool for local development with dependencies like Docker cont
 * Define Docker Containers that must be running, before any commands can be executed
 * Define Build Steps that need to succeed, before a command is executed
 * Configure environments for commands, these are separate from the system environment
-* Human editable configuration format using RON (Rust Object Notation) for our `service.ron` files.
+* Human editable configuration format using RON (Rust Object Notation) for our `hisho.ron` files.
 
 ## Supported Platforms
 
