@@ -10,7 +10,7 @@ use std::collections::HashMap;
 
 pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) -> bool {
     if !cmd.depends_on_build.is_empty() {
-        println!("Service: Checking Build dependencies ..");
+        println!("Hisho: Checking Build dependencies ..");
 
         let mut vars = TemplateVariables::new();
         vars.insert("env", env.values.clone());

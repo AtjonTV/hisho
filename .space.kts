@@ -16,8 +16,8 @@ job("Build") {
             """
         }
 		fileArtifacts {
-			remotePath = "service_helper-musl.bin"
-			localPath = "target/x86_64-unknown-linux-musl/release/service_helper"
+			remotePath = "hisho-musl.bin"
+			localPath = "target/x86_64-unknown-linux-musl/release/hisho"
 		}
 		cache {
 			storeKey = "sccache-{{ hashFiles('.cache.lock') }}"

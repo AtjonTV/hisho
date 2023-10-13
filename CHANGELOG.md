@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### Changed
-* **BREAKING**: Renamed `Service` to `Project` in configuration files.
-
-### Fixed
-* when a container had an empty name, all the existing and stopped containers where started
-
 <!--
 ### Added
 ### Changed
@@ -21,6 +15,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 -->
+
+## [0.4.0] - 2023-10-07
+
+### Changed
+* **BREAKING**: Renamed service_helper to Hisho
+* **BREAKING**: Renamed default file from `service.ron` to `hisho.ron`
+* **BREAKING**: Renamed `Service` to `Project` in configuration files.
+
+### Fixed
+* when a container had an empty name, all the existing and stopped containers where started
+
 
 ## [0.3.0] - 2023-10-07
 

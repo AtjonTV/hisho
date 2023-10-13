@@ -446,6 +446,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
+name = "hisho"
+version = "0.4.0"
+dependencies = [
+ "argust",
+ "dockworker",
+ "dotenv-parser",
+ "glob",
+ "liquid",
+ "ron",
+ "serde",
+ "tokio",
+]
+
+[[package]]
 name = "http"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -960,20 +974,6 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
-]
-
-[[package]]
-name = "service_helper"
-version = "0.3.0"
-dependencies = [
- "argust",
- "dockworker",
- "dotenv-parser",
- "glob",
- "liquid",
- "ron",
- "serde",
- "tokio",
 ]
 
 [[package]]
