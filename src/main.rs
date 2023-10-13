@@ -181,7 +181,7 @@ fn print_help(project: Option<&Project>, service_file: Option<&str>) {
     ));
     if service_file.is_some() {
         log::print(format!(
-            "Arguments:\n--hisho:file\tSpecify a .ron file to load, tries to load '{}' by default", service_file.unwrap()
+            "Arguments:\n\t  --hisho:file\tSpecify a .ron file to load, tries to load '{}' by default", service_file.unwrap()
         ));
     }
     if project.is_some() {
@@ -191,7 +191,7 @@ fn print_help(project: Option<&Project>, service_file: Option<&str>) {
                 .unwrap()
                 .commands
                 .iter()
-                .map(|c| format!("- {}", c.name.clone()))
+                .map(|c| format!("\t  - {}", c.name.clone()))
                 .collect::<Vec<String>>()
                 .join("\n")
         ));
