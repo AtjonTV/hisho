@@ -18,4 +18,4 @@ While Hish tries to be platform agnostic, there is no guarantee that it works on
 ## License
 
 This code is licensed under the Mozilla Public License, 2.0.  
-You can find a copy of the license in LICENSE file.
+You can find a copy of the license in the LICENSE.txt file.
