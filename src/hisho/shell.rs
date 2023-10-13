@@ -6,7 +6,7 @@
 use std::io;
 use std::process::ExitStatus;
 
-use crate::config_models::{Environment, Process};
+use crate::hisho::config_models::{Environment, Process};
 use crate::log;
 
 pub fn exec(process: &Process, env: &Environment) -> io::Result<ExitStatus> {

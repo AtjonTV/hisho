@@ -6,8 +6,8 @@
 use std::collections::HashMap;
 use std::fs;
 
-use crate::config_models::{BuildStep, Environment, Environments, Process};
-use crate::{log, template};
+use crate::hisho::config_models::{BuildStep, Environment, Environments, Process};
+use crate::hisho::{log, template};
 
 pub fn fetch_environment(environment: &str, environments: &Environments) -> Option<Environment> {
     if environment.is_empty() {

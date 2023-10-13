@@ -3,9 +3,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use crate::config_models::{BuildStep, BuildSteps, Command, Environment, Process};
-use crate::template::TemplateVariables;
-use crate::{log, shell, template};
+use crate::hisho::config_models::{BuildStep, BuildSteps, Command, Environment, Process};
+use crate::hisho::template::TemplateVariables;
+use crate::hisho::{log, shell, template};
 use std::collections::HashMap;
 
 pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) -> bool {

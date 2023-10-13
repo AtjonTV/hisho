@@ -6,7 +6,7 @@
 use liquid::Object;
 use std::collections::HashMap;
 
-use crate::config_models::Process;
+use crate::hisho::config_models::Process;
 use crate::log;
 
 type TemplateVarMap = HashMap<String, HashMap<String, String>>;

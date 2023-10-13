@@ -7,8 +7,8 @@ use std::collections::HashSet;
 use dockworker::container::ContainerFilters;
 use dockworker::Docker;
 
-use crate::config_models::{Containers, Environment};
-use crate::{log, template};
+use crate::hisho::config_models::{Containers, Environment};
+use crate::hisho::{log, template};
 
 pub async fn ensure_running(containers: &Containers, env: &Environment) -> bool {
     if !containers.is_empty() {

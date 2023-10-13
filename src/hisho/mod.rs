@@ -3,11 +3,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use crate::hisho::{cli, log};
-
-mod hisho;
-
-#[tokio::main]
-async fn main() {
-    cli::cli_main();
-}
+pub mod build;
+pub mod config;
+pub mod config_models;
+pub mod containers;
+pub mod shell;
+pub mod template;
+pub mod log;
+pub mod cli;
