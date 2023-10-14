@@ -23,6 +23,10 @@ impl TemplateVariables {
         self.0.insert(key.to_string(), value);
     }
 
+    pub fn get(&self, key: &str) -> Option<&HashMap<String, String>> {
+        self.0.get(key)
+    }
+
     pub fn as_value(&self) -> Object {
         liquid::object!(self.0.clone())
     }

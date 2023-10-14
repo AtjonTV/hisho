@@ -9,9 +9,8 @@ use std::{env, fs};
 use crate::hisho::config::fetch_environment;
 use crate::hisho::config_models::{Environment, Process, Project};
 use crate::hisho::template::TemplateVariables;
-use crate::hisho::{build, containers, log, shell, template};
+use crate::hisho::{build, containers, git, log, shell, template};
 
-#[tokio::main]
 pub async fn cli_main() {
     let version = env!("CARGO_PKG_VERSION");
     log::print(format!("Hisho v{} by Thomas Obernosterer", version));
@@ -93,6 +92,9 @@ pub async fn cli_main() {
 
     let mut command_found = false;
 
+    let mut vars = TemplateVariables::new();
+    vars.insert("git", git::fetch_repo_vars(service_file.as_str()));
+
     // if a command was given, try to match it to the config defined
     if let Some(command) = args.first() {
         for cmd in &project.commands {
@@ -102,14 +104,15 @@ pub async fn cli_main() {
                 let env =
                     fetch_environment(cmd.environment.clone().as_str(), &project.environments)
                         .unwrap_or(Environment::new_empty());
+                vars.insert("env", env.values);
 
                 // make sure required containers are running
-                if !containers::ensure_running(&project.containers, &env).await {
+                if !containers::ensure_running(&project.containers, &vars).await {
                     return;
                 }
 
                 // make sure required builds have run successfully
-                if !build::ensure_build(cmd, &project.build, &env) {
+                if !build::ensure_build(cmd, &project.build, &vars) {
                     return;
                 }
 
@@ -126,7 +129,7 @@ pub async fn cli_main() {
                     for shell_cmd in &cmd.shell {
                         let _ = shell::exec(
                             &Process::new(shell_cmd.command.clone(), given_args.clone()),
-                            &env,
+                            vars.get("env"),
                         );
                     }
                 } else {
@@ -142,8 +145,6 @@ pub async fn cli_main() {
                             }
                         })
                         .collect();
-                    let mut vars = TemplateVariables::new();
-                    vars.insert("env", env.values.clone());
                     vars.insert("arg", argument_lookup);
                     for shell_cmd in &cmd.shell {
                         if let Some(rendered_command) =
@@ -154,7 +155,7 @@ pub async fn cli_main() {
                     }
 
                     for rendered_command in &rendered_commands {
-                        let _ = shell::exec(rendered_command, &env);
+                        let _ = shell::exec(rendered_command, vars.get("env"));
                     }
                 }
             }

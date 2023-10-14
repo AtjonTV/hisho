@@ -3,23 +3,20 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use crate::hisho::config_models::{BuildStep, BuildSteps, Command, Environment, Process};
+use crate::hisho::config_models::{BuildStep, BuildSteps, Command, Process};
 use crate::hisho::template::TemplateVariables;
 use crate::hisho::{log, shell, template};
 use std::collections::HashMap;
 
-pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, env: &Environment) -> bool {
+pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVariables) -> bool {
     if !cmd.depends_on_build.is_empty() {
         log::print("Checking Build dependencies ..".to_string());
-
-        let mut vars = TemplateVariables::new();
-        vars.insert("env", env.values.clone());
 
         let build_steps = get_build_steps(&cmd.depends_on_build, build_steps, &vars);
         for step in build_steps {
             if let Some(rendered_command) = template::render_process(&step.1, vars.as_value()) {
                 log::print(format!("\tRunning build step: {}", step.0));
-                let result = shell::exec(&rendered_command, env);
+                let result = shell::exec(&rendered_command, vars.get("env"));
                 if result.is_err() {
                     log::print("\tFailed to run Build Step!".to_string());
                     return false;

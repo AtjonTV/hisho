@@ -19,3 +19,4 @@ ron = "0.8.1"
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "1.0.0", features = ["rt", "rt-multi-thread", "macros"] }
 once_cell = "1.18.0"
+gix = "0.55.2"

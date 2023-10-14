@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Added
+* Git commit_sha, commit_sha_short, commit_date (in ISO8601 format), commit_author_name and commit_author_email available in templates via `git`
+
 ### Changed
 * Container names can now be templated based on the command environment
 * Hisho exists when a container does not exist or can not be started

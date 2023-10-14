@@ -9,5 +9,5 @@ mod hisho;
 
 #[tokio::main]
 async fn main() {
-    cli::cli_main();
+    cli::cli_main().await;
 }

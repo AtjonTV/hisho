@@ -7,14 +7,13 @@ use dockworker::container::ContainerFilters;
 use dockworker::Docker;
 use std::collections::HashSet;
 
-use crate::hisho::config_models::{Containers, Environment};
+use crate::hisho::config_models::Containers;
+use crate::hisho::template::TemplateVariables;
 use crate::hisho::{log, template};
 
-pub async fn ensure_running(containers: &Containers, env: &Environment) -> bool {
+pub async fn ensure_running(containers: &Containers, vars: &TemplateVariables) -> bool {
     if !containers.is_empty() {
         log::print("Checking Container dependencies ..".to_string());
-        let mut vars = template::TemplateVariables::new();
-        vars.insert("env", env.values.clone());
         let docker_con = Docker::connect_with_defaults();
         if let Ok(docker) = docker_con {
             let mut required_containers: HashSet<String> = HashSet::new();
