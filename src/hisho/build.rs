@@ -13,10 +13,10 @@ pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVari
         log::print("Checking Build dependencies ..".to_string());
 
         let build_steps = get_build_steps(&cmd.depends_on_build, build_steps, &vars);
-        for step in build_steps {
-            if let Some(rendered_command) = template::render_process(&step.1, vars.as_value()) {
-                log::print(format!("\tRunning build step: {}", step.0));
-                let result = shell::exec(&rendered_command, vars.get("env"));
+        for (step_name, shell) in build_steps {
+            for proc in shell {
+                log::print(format!("\tRunning build step: {}", step_name));
+                let result = shell::exec(&proc, vars.get("env"));
                 if result.is_err() {
                     log::print("\tFailed to run Build Step!".to_string());
                     return false;
@@ -24,9 +24,6 @@ pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVari
                     log::error("\tBuild Step returned non-zero exit code!".to_string());
                     return false;
                 }
-            } else {
-                log::error("\tFailed to render Build Step!".to_string());
-                return false;
             }
         }
         log::print(String::new());
@@ -38,7 +35,7 @@ pub fn get_build_steps(
     wanted_steps: &Vec<String>,
     build_steps: &BuildSteps,
     vars: &TemplateVariables,
-) -> Vec<(String, Process)> {
+) -> Vec<(String, Vec<Process>)> {
     let all_steps = find_build_steps(wanted_steps, build_steps);
     create_shell_from_steps(&all_steps, vars)
 }
@@ -80,22 +77,27 @@ fn find_build_steps(wanted_steps: &Vec<String>, build_steps: &BuildSteps) -> Bui
     steps
 }
 
-fn create_shell_from_steps(steps: &BuildSteps, vars: &TemplateVariables) -> Vec<(String, Process)> {
-    let mut shell: Vec<(String, Process)> = Vec::new();
+fn create_shell_from_steps(steps: &BuildSteps, vars: &TemplateVariables) -> Vec<(String, Vec<Process>)> {
+    let mut shell: Vec<(String, Vec<Process>)> = Vec::new();
     for step in steps {
-        if let Some(shell_cmd) = create_shell_from_step(step, vars) {
-            shell.push((step.name.clone(), shell_cmd));
-        }
+        let procs = create_shell_from_step(step, vars);
+        shell.push((step.name.clone(), procs));
     }
     shell
 }
 
-fn create_shell_from_step(step: &BuildStep, vars: &TemplateVariables) -> Option<Process> {
+fn create_shell_from_step(step: &BuildStep, vars: &TemplateVariables) -> Vec<Process> {
     let mut template_vars = vars.clone();
     if !step.input_files.is_empty() {
         template_vars.insert("build", create_build_vars(step));
     }
-    template::render_process(&step.shell, template_vars.as_value())
+    step.shell.iter()
+        .map(|proc| {
+            template::render_process(proc, template_vars.as_value())
+        })
+        .filter(|opt_proc| opt_proc.is_some())
+        .map(|opt_proc| opt_proc.unwrap())
+        .collect::<Vec<Process>>()
 }
 
 fn create_build_vars(step: &BuildStep) -> HashMap<String, String> {

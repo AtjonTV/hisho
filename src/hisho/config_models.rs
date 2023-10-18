@@ -64,7 +64,7 @@ pub struct Process {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct BuildStep {
     pub name: String,
-    pub shell: Process,
+    pub shell: Vec<Process>,
     #[serde(default)]
     pub depends_on: Vec<String>,
     #[serde(default)]

@@ -38,33 +38,41 @@ Project(
   build: [
     BuildStep(
       name: "cargo-version",
-      shell: Process(
-        command: "cargo",
-        args: ["--version"]
-      ),
+      shell: [
+        Process(
+          command: "cargo",
+          args: ["--version"]
+        )
+      ],
     ),
     BuildStep(
       name: "render-template",
-      shell: Process(
-        command: "echo",
-        args: ["job", "'{{build.name}}'", "git", "'{{git.commit_sha}}'", "'{{git.commit_sha_short}}'", "'{{git.commit_author_name}}'", "'{{git.commit_author_email}}'", "'{{git.commit_date}}'"]
-      ),
+      shell: [
+        Process(
+          command: "echo",
+          args: ["job", "'{{build.name}}'", "git", "'{{git.commit_sha}}'", "'{{git.commit_sha_short}}'", "'{{git.commit_author_name}}'", "'{{git.commit_author_email}}'", "'{{git.commit_date}}'"]
+        )
+      ],
       input_files: ["src/*.rs"]
     ),
     BuildStep(
       name: "build",
-      shell: Process(
-        command: "cargo",
-        args: ["build"]
-      ),
+      shell: [
+        Process(
+          command: "cargo",
+          args: ["build"]
+        )
+      ],
       depends_on: ["cargo-version"]
     ),
     BuildStep(
       name: "release",
-      shell: Process(
-        command: "cargo",
-        args: ["build", "--release"]
-      ),
+      shell: [
+        Process(
+          command: "cargo",
+          args: ["build", "--release"]
+        )
+      ],
     ),
   ],
   commands: [
