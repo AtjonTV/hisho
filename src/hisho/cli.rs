@@ -25,7 +25,7 @@ pub async fn cli_main() {
     // if no arguments have been given and the default service file does not exist
     if args.is_empty() && !default_file_exists {
         print_help(None, Some(default_service_file));
-        return;
+        exit(1);
     }
 
     // parse the args
@@ -46,7 +46,7 @@ pub async fn cli_main() {
             service_file,
             e.to_string()
         ));
-        return;
+        exit(2);
     }
     let project_data: SpannedResult<Project> = ron::from_str(data_from_file.unwrap().as_str());
     if let Err(e) = project_data {
@@ -55,7 +55,7 @@ pub async fn cli_main() {
             service_file,
             e.to_string()
         ));
-        return;
+        exit(2);
     }
 
     // remove service consumed arguments
@@ -87,7 +87,7 @@ pub async fn cli_main() {
     // if no arguments have been given
     if args.is_empty() {
         print_help(Some(&project), None);
-        return;
+        exit(1);
     }
 
     let mut command_found = false;
@@ -164,7 +164,7 @@ pub async fn cli_main() {
 
     if !command_found {
         print_help(Some(&project), None);
-        return;
+        exit(1);
     }
 }
 
