@@ -77,7 +77,10 @@ fn find_build_steps(wanted_steps: &Vec<String>, build_steps: &BuildSteps) -> Bui
     steps
 }
 
-fn create_shell_from_steps(steps: &BuildSteps, vars: &TemplateVariables) -> Vec<(String, Vec<Process>)> {
+fn create_shell_from_steps(
+    steps: &BuildSteps,
+    vars: &TemplateVariables,
+) -> Vec<(String, Vec<Process>)> {
     let mut shell: Vec<(String, Vec<Process>)> = Vec::new();
     for step in steps {
         let procs = create_shell_from_step(step, vars);
@@ -91,10 +94,9 @@ fn create_shell_from_step(step: &BuildStep, vars: &TemplateVariables) -> Vec<Pro
     if !step.input_files.is_empty() {
         template_vars.insert("build", create_build_vars(step));
     }
-    step.shell.iter()
-        .map(|proc| {
-            template::render_process(proc, template_vars.as_value())
-        })
+    step.shell
+        .iter()
+        .map(|proc| template::render_process(proc, template_vars.as_value()))
         .filter(|opt_proc| opt_proc.is_some())
         .map(|opt_proc| opt_proc.unwrap())
         .collect::<Vec<Process>>()

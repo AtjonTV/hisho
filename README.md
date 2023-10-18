@@ -13,7 +13,7 @@ Hisho is a utility tool for local development with dependencies like Docker cont
 
 Hisho officially only supports Linux on AMD64 CPUs, being build with Rust 1.73+ and musl libc.
 
-While Hish tries to be platform agnostic, there is no guarantee that it works on other platforms.
+While Hisho tries to be platform agnostic, there is no guarantee that it works on other platforms.
 
 ## License
 
