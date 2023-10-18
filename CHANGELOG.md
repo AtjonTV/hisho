@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+<!--
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
+-->
+
+## [0.5.0] - 2023-10-18
+
 ### Added
 * Git commit_sha, commit_sha_short, commit_date (in ISO8601 format), commit_author_name and commit_author_email available in templates via `git`
 
@@ -20,15 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 * BuildStep commands are not passed through the template engine twice
-
-<!--
-### Added
-### Changed
-### Deprecated
-### Removed
-### Fixed
-### Security
--->
 
 ## [0.4.0] - 2023-10-07
 
