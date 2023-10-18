@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [1.0.0-rc.1] - 2023-10-18
+
+Tag v0.5.0 as v1.0.0-rc.1 in preparation for a stable release.  
+There might still be breaking changes before 1.0 stable!
+
 ## [0.5.0] - 2023-10-18
 
 ### Added
