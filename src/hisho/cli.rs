@@ -49,6 +49,14 @@ pub async fn cli_main() {
         exit(2);
     });
 
+    let workdir = service_file.parent().unwrap_or_else(|| {
+        log::error(format!(
+            "Could not resolve parent directory of service file '{}'",
+            service_file_path,
+        ));
+        exit(2);
+    });
+
     let data_from_file = fs::read_to_string(service_file.clone());
     if let Err(e) = data_from_file {
         log::error(format!(
@@ -103,7 +111,7 @@ pub async fn cli_main() {
     let mut command_found = false;
 
     let mut vars = TemplateVariables::new();
-    vars.insert("git", git::fetch_repo_vars(&service_file));
+    vars.insert("git", git::fetch_repo_vars(&workdir));
 
     // if a command was given, try to match it to the config defined
     if let Some(command) = args.first() {
@@ -112,7 +120,7 @@ pub async fn cli_main() {
                 command_found = true;
                 // try to fetch an environment
                 let env =
-                    fetch_environment(cmd.environment.clone().as_str(), &project.environments)
+                    fetch_environment(cmd.environment.clone().as_str(), &project.environments, workdir)
                         .unwrap_or(Environment::new_empty());
                 vars.insert("env", env.values);
 

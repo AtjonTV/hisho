@@ -5,11 +5,12 @@
 
 use std::collections::HashMap;
 use std::fs;
+use std::path::Path;
 
 use crate::hisho::config_models::{BuildStep, Environment, Environments, Process};
 use crate::hisho::{log, template};
 
-pub fn fetch_environment(environment: &str, environments: &Environments) -> Option<Environment> {
+pub fn fetch_environment(environment: &str, environments: &Environments, workdir: &Path) -> Option<Environment> {
     if environment.is_empty() {
         return None;
     }
@@ -40,12 +41,12 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
     if !env.inherits.is_empty() {
         let mut parent_envs: Vec<Environment> = Vec::new();
         for parent_env in &env.inherits {
-            if let Some(mut parent) = fetch_environment(parent_env, &new_environments) {
+            if let Some(mut parent) = fetch_environment(parent_env, &new_environments, workdir) {
                 // Prevent an environment from depending on itself
                 if parent.name == environment {
                     continue;
                 }
-                load_env_from_file(&parent.sources, &mut parent.values);
+                load_env_from_file(workdir, &parent.sources, &mut parent.values);
                 parent_envs.push(parent);
             }
         }
@@ -57,7 +58,7 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
         }
     }
 
-    load_env_from_file(&env.sources, &mut current_env);
+    load_env_from_file(workdir, &env.sources, &mut current_env);
     for (key, value) in env.values {
         current_env.insert(key.clone(), value.clone());
     }
@@ -66,10 +67,12 @@ pub fn fetch_environment(environment: &str, environments: &Environments) -> Opti
     Some(Environment::new("current", Vec::new(), rendered_env))
 }
 
-fn load_env_from_file(sources: &Vec<String>, out_env: &mut HashMap<String, String>) {
+fn load_env_from_file(workdir: &Path, sources: &Vec<String>, out_env: &mut HashMap<String, String>) {
     if !sources.is_empty() {
         for path in sources {
-            if let Ok(data) = fs::read_to_string(path) {
+            let mut file_path = workdir.to_path_buf();
+            file_path.push(path);
+            if let Ok(data) = fs::read_to_string(file_path) {
                 if let Ok(btree) = dotenv_parser::parse_dotenv(data.as_str()) {
                     for (k, v) in btree {
                         out_env.insert(k, v);
