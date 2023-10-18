@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Container names can now be templated based on the command environment
 * Hisho exists when a container does not exist or can not be started
 * **BREAKING**: BuildStep now takes a list of Processes for its `shell` field
+* Resolve Git repository relative to the ron file, even when `--hisho:file=` is given
+* Resolve `~` in a given `--hisho:file=` path to the users home directory
 
 ### Fixed
 * BuildStep commands are not passed through the template engine twice

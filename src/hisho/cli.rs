@@ -4,12 +4,13 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 use ron::error::SpannedResult;
+use std::process::exit;
 use std::{env, fs};
 
 use crate::hisho::config::fetch_environment;
 use crate::hisho::config_models::{Environment, Process, Project};
 use crate::hisho::template::TemplateVariables;
-use crate::hisho::{build, containers, git, log, shell, template};
+use crate::hisho::{build, containers, files, git, log, shell, template};
 
 pub async fn cli_main() {
     let version = env!("CARGO_PKG_VERSION");
@@ -32,18 +33,27 @@ pub async fn cli_main() {
     let mut command_set: argust::ArgContext = argust::parse_args(args.iter(), None);
 
     // try to get file name from -f, and default to default_service_file if -f not given or empty
-    let service_file = command_set
+    let service_file_path = command_set
         .long_params
         .get("hisho:file")
         .unwrap_or(&None)
         .clone()
         .unwrap_or(default_service_file.to_string());
 
-    let data_from_file = fs::read_to_string(service_file.as_str());
+    let service_file = files::resolve_path(service_file_path.clone()).unwrap_or_else(|e| {
+        log::error(format!(
+            "Could not find service file '{}': {:?}",
+            service_file_path,
+            e.to_string()
+        ));
+        exit(2);
+    });
+
+    let data_from_file = fs::read_to_string(service_file.clone());
     if let Err(e) = data_from_file {
         log::error(format!(
             "Could not read service file '{}': {:?}",
-            service_file,
+            service_file.to_str().unwrap(),
             e.to_string()
         ));
         exit(2);
@@ -52,7 +62,7 @@ pub async fn cli_main() {
     if let Err(e) = project_data {
         log::error(format!(
             "Could not parse service file '{}': {:?}",
-            service_file,
+            service_file.to_str().unwrap(),
             e.to_string()
         ));
         exit(2);
@@ -93,7 +103,7 @@ pub async fn cli_main() {
     let mut command_found = false;
 
     let mut vars = TemplateVariables::new();
-    vars.insert("git", git::fetch_repo_vars(service_file.as_str()));
+    vars.insert("git", git::fetch_repo_vars(&service_file));
 
     // if a command was given, try to match it to the config defined
     if let Some(command) = args.first() {

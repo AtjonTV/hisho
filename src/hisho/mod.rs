@@ -8,6 +8,7 @@ pub mod cli;
 pub mod config;
 pub mod config_models;
 pub mod containers;
+pub mod files;
 pub mod git;
 pub mod log;
 pub mod shell;
