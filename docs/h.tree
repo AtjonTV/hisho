@@ -6,9 +6,11 @@
                  name="Hisho"
                  start-page="Hisho.md">
 
-    <toc-element topic="Hisho.md"/>
+    <toc-element topic="Hisho.md">
+    </toc-element>
     <toc-element topic="00-Project-Configuration.md">
         <toc-element topic="01-Project.md"/>
         <toc-element topic="02-Environment.md"/>
     </toc-element>
+    <toc-element topic="Templating.md"/>
 </instance-profile>
