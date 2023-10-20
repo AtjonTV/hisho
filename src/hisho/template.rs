@@ -89,7 +89,11 @@ pub fn render_process(process: &Process, args: Object) -> Option<Process> {
     render_process_with_argv(process, args, &argv)
 }
 
-pub fn render_process_with_argv(process: &Process, args: Object, argv: &Vec<String>) -> Option<Process> {
+pub fn render_process_with_argv(
+    process: &Process,
+    args: Object,
+    argv: &Vec<String>,
+) -> Option<Process> {
     let mut rendered_proc_args: Vec<String> = Vec::new();
     let mut proc_args = process.args.clone();
     expand_argv_label(&mut proc_args, argv);
@@ -128,7 +132,9 @@ fn expand_argv_label(data: &mut Vec<String>, argv: &Vec<String>) {
         // add the offset to the position
         let new_pos = pos + pos_offset;
         // splice the argv into the position
-        let _: Vec<String> = data.splice(new_pos..=new_pos, argv.iter().cloned()).collect();
+        let _: Vec<String> = data
+            .splice(new_pos..=new_pos, argv.iter().cloned())
+            .collect();
         // increment the offset by the amount of spliced items
         pos_offset += argv.len() - 1
     }

@@ -10,7 +10,11 @@ use std::path::Path;
 use crate::hisho::config_models::{BuildStep, Environment, Environments};
 use crate::hisho::{log, template};
 
-pub fn fetch_environment(environment: &str, environments: &Environments, workdir: &Path) -> Option<Environment> {
+pub fn fetch_environment(
+    environment: &str,
+    environments: &Environments,
+    workdir: &Path,
+) -> Option<Environment> {
     if environment.is_empty() {
         return None;
     }
@@ -67,7 +71,11 @@ pub fn fetch_environment(environment: &str, environments: &Environments, workdir
     Some(Environment::new("current", Vec::new(), rendered_env))
 }
 
-fn load_env_from_file(workdir: &Path, sources: &Vec<String>, out_env: &mut HashMap<String, String>) {
+fn load_env_from_file(
+    workdir: &Path,
+    sources: &Vec<String>,
+    out_env: &mut HashMap<String, String>,
+) {
     if !sources.is_empty() {
         for path in sources {
             let mut file_path = workdir.to_path_buf();

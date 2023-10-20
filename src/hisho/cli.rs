@@ -119,9 +119,12 @@ pub async fn cli_main() {
             if cmd.name == *command {
                 command_found = true;
                 // try to fetch an environment
-                let env =
-                    fetch_environment(cmd.environment.clone().as_str(), &project.environments, workdir)
-                        .unwrap_or(Environment::new_empty());
+                let env = fetch_environment(
+                    cmd.environment.clone().as_str(),
+                    &project.environments,
+                    workdir,
+                )
+                .unwrap_or(Environment::new_empty());
                 vars.insert("env", env.values);
 
                 // make sure required containers are running
