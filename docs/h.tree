@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="h"
+                 name="Hisho"
+                 start-page="Hisho.md">
+
+    <toc-element topic="Hisho.md"/>
+    <toc-element topic="Project-Configuration.md">
+        <toc-element topic="Project.md"/>
+        <toc-element topic="Environment.md"/>
+    </toc-element>
+</instance-profile>
