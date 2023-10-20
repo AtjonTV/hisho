@@ -1,10 +1,11 @@
 # Project Configuration
 
-We use the RON (Rusty Object Notation) for project configuration.
+In order to use Hisho, a configuration file is needed.  
+The configuration file defines a Project and everything related to it.
 
-The RON format allows for human modifiable configuration file, that is easy to understand.
-While it is similar to JSON in structure, it is much simpler.
+For the configuration we use the RON (Rusty Object Notation) file format.
 
-Due to this simplicity and human readability we chose to use it over other formats like TOML, YAML or JSON.
-These other formats start out as being human-readable, but quickly become an unreadable mess once more complex
-functionality is needed.
+The RON format allows for human modification, and can be easily understood.
+While it is similar to JSON in structure, it is much simpler and specific.
+
+The following topics will go through the structure of the configuration files from top to bottom.
