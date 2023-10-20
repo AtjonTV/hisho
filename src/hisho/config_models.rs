@@ -48,8 +48,6 @@ pub struct Command {
     #[serde(default)]
     pub args: HashMap<String, String>,
     #[serde(default)]
-    pub capture_all: bool,
-    #[serde(default)]
     pub depends_on_build: Vec<String>,
 }
 pub type Commands = Vec<Command>;

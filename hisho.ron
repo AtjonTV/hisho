@@ -81,9 +81,9 @@ Project(
       shell: [
         Process(
           command: "echo",
+          args: ["[[argv]]"],
         ),
       ],
-      capture_all: true
     ),
     Command(
       name: "run",

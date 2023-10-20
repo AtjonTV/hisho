@@ -85,8 +85,15 @@ pub fn render_environment_value(
 }
 
 pub fn render_process(process: &Process, args: Object) -> Option<Process> {
+    let argv = Vec::new();
+    render_process_with_argv(process, args, &argv)
+}
+
+pub fn render_process_with_argv(process: &Process, args: Object, argv: &Vec<String>) -> Option<Process> {
     let mut rendered_proc_args: Vec<String> = Vec::new();
-    for arg in &process.args {
+    let mut proc_args = process.args.clone();
+    expand_argv_label(&mut proc_args, argv);
+    for arg in &proc_args {
         if let Some(rendered_arg) = render_string(arg.clone(), &args) {
             rendered_proc_args.push(rendered_arg);
         } else {
@@ -104,6 +111,26 @@ pub fn render_process(process: &Process, args: Object) -> Option<Process> {
             command: process.command.clone(),
             args: rendered_proc_args,
         })
+    }
+}
+
+fn expand_argv_label(data: &mut Vec<String>, argv: &Vec<String>) {
+    let mut positions = Vec::new();
+    // find all positions that should be expanded
+    for (i, string) in data.iter().enumerate() {
+        if string.eq("[[argv]]") {
+            positions.push(i);
+        }
+    }
+
+    let mut pos_offset = 0;
+    for pos in positions {
+        // add the offset to the position
+        let new_pos = pos + pos_offset;
+        // splice the argv into the position
+        let _: Vec<String> = data.splice(new_pos..=new_pos, argv.iter().cloned()).collect();
+        // increment the offset by the amount of spliced items
+        pos_offset += argv.len() - 1
     }
 }
 

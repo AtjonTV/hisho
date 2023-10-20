@@ -140,41 +140,33 @@ pub async fn cli_main() {
                     return;
                 }
 
-                if cmd.capture_all {
-                    // Construct the command to be executed
-                    let given_args = args.iter().skip(1).cloned().collect::<Vec<String>>();
+                // collect all args removing the command name
+                let given_args = args.iter().skip(1).cloned().collect::<Vec<String>>();
 
-                    for shell_cmd in &cmd.shell {
-                        let _ = shell::exec(
-                            &Process::new(shell_cmd.command.clone(), given_args.clone()),
-                            vars.get("env"),
-                        );
-                    }
-                } else {
-                    let mut rendered_commands: Vec<Process> = Vec::new();
-                    let argument_lookup = command_set
-                        .long_params
-                        .iter()
-                        .map(|(key, value)| {
-                            if value.is_some() {
-                                (key.clone(), value.clone().unwrap())
-                            } else {
-                                (key.clone(), String::new())
-                            }
-                        })
-                        .collect();
-                    vars.insert("arg", argument_lookup);
-                    for shell_cmd in &cmd.shell {
-                        if let Some(rendered_command) =
-                            template::render_process(shell_cmd, vars.as_value())
-                        {
-                            rendered_commands.push(rendered_command);
+                let mut rendered_commands: Vec<Process> = Vec::new();
+                // collect the --long-param=value pairs
+                let argument_lookup = command_set
+                    .long_params
+                    .iter()
+                    .map(|(key, value)| {
+                        if value.is_some() {
+                            (key.clone(), value.clone().unwrap())
+                        } else {
+                            (key.clone(), String::new())
                         }
+                    })
+                    .collect();
+                vars.insert("arg", argument_lookup);
+                for shell_cmd in &cmd.shell {
+                    if let Some(rendered_command) =
+                        template::render_process_with_argv(shell_cmd, vars.as_value(), &given_args)
+                    {
+                        rendered_commands.push(rendered_command);
                     }
+                }
 
-                    for rendered_command in &rendered_commands {
-                        let _ = shell::exec(rendered_command, vars.get("env"));
-                    }
+                for rendered_command in &rendered_commands {
+                    let _ = shell::exec(rendered_command, vars.get("env"));
                 }
             }
         }

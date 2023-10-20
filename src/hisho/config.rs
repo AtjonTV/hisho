@@ -7,7 +7,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 
-use crate::hisho::config_models::{BuildStep, Environment, Environments, Process};
+use crate::hisho::config_models::{BuildStep, Environment, Environments};
 use crate::hisho::{log, template};
 
 pub fn fetch_environment(environment: &str, environments: &Environments, workdir: &Path) -> Option<Environment> {
@@ -103,12 +103,6 @@ impl Environment {
             values,
             sources: Vec::new(),
         }
-    }
-}
-
-impl Process {
-    pub fn new(command: String, args: Vec<String>) -> Process {
-        Process { command, args }
     }
 }
 

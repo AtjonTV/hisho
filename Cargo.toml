@@ -1,6 +1,6 @@
 [package]
 name = "hisho"
-version = "1.0.0-rc.1"
+version = "1.0.0-rc.2"
 license = "MPL-2.0"
 authors = ["Thomas Obernosterer <thomas.obernosterer@atvg-studios.com>"]
 description = "Hisho is a utility tool for local development with dependencies like Docker containers."
