@@ -15,6 +15,10 @@ pub fn exec(process: &Process, env: Option<&HashMap<String, String>>) -> io::Res
     let mut proc_command = std::process::Command::new(process.command.clone());
     proc_command.args(process.args.clone());
 
+    if !process.cwd.is_empty() {
+        proc_command.current_dir(process.cwd.clone());
+    }
+
     if env.is_some() {
         proc_command.envs(env.unwrap().clone());
     }

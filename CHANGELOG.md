@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Added
+* Process now has `cwd` to specify the current working directory where the command is executed
+
 <!--
 ### Added
 ### Changed

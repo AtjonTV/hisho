@@ -57,6 +57,8 @@ pub struct Process {
     pub command: String,
     #[serde(default)]
     pub args: Vec<String>,
+    #[serde(default)]
+    pub cwd: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]

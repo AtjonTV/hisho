@@ -104,16 +104,19 @@ pub fn render_process_with_argv(
             return None;
         }
     }
+    let workdir = render_string(process.cwd.clone(), &args).unwrap_or(process.cwd.clone());
     if cfg!(feature = "allow_unsafe_command_templates") {
         // TODO: If we add system environment variables, they MUST be removed here for security reasons!
         render_string(process.command.clone(), &args).map(|command| Process {
             command,
             args: rendered_proc_args,
+            cwd: workdir
         })
     } else {
         Some(Process {
             command: process.command.clone(),
             args: rendered_proc_args,
+            cwd: workdir
         })
     }
 }
@@ -195,6 +198,7 @@ mod tests {
         let process = Process {
             command: "echo".to_string(),
             args: vec!["Hello, {{env.name}}!".to_string()],
+            cwd: String::new(),
         };
 
         let mut vars = TemplateVariables::new();
@@ -218,6 +222,7 @@ mod tests {
         let process = Process {
             command: "{{env.bin_dir}}/echo".to_string(),
             args: vec![],
+            cwd: String::new(),
         };
         let rendered = render_process(
             &process,

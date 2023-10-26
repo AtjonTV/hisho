@@ -86,6 +86,16 @@ Project(
       ],
     ),
     Command(
+      name: "list-src",
+      shell: [
+        Process(
+          command: "ls",
+          args: ["-l"],
+          cwd: "./src/hisho"
+        ),
+      ],
+    ),
+    Command(
       name: "run",
       shell: [
         Process(
