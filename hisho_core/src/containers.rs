@@ -7,9 +7,10 @@ use dockworker::container::ContainerFilters;
 use dockworker::Docker;
 use std::collections::HashSet;
 
-use crate::hisho::config_models::Containers;
-use crate::hisho::template::TemplateVariables;
-use crate::hisho::{log, template};
+use crate::config_models::Containers;
+use crate::log;
+use crate::template;
+use crate::template::TemplateVariables;
 
 pub async fn ensure_running(containers: &Containers, vars: &TemplateVariables) -> bool {
     if !containers.is_empty() {

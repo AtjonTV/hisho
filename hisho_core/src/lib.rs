@@ -4,7 +4,6 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 pub mod build;
-pub mod cli;
 pub mod config;
 pub mod config_models;
 pub mod containers;

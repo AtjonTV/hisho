@@ -7,8 +7,8 @@ use std::collections::HashMap;
 use std::io;
 use std::process::ExitStatus;
 
-use crate::hisho::config_models::Process;
-use crate::hisho::log;
+use crate::config_models::Process;
+use crate::log;
 
 pub fn exec(process: &Process, env: Option<&HashMap<String, String>>) -> io::Result<ExitStatus> {
     // execute the command in /bin/sh

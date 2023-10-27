@@ -7,8 +7,9 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 
-use crate::hisho::config_models::{BuildStep, Environment, Environments};
-use crate::hisho::{log, template};
+use crate::config_models::{BuildStep, Environment, Environments};
+use crate::log;
+use crate::template;
 
 pub fn fetch_environment(
     environment: &str,

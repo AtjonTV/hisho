@@ -7,12 +7,19 @@ use ron::error::SpannedResult;
 use std::process::exit;
 use std::{env, fs};
 
-use crate::hisho::config::fetch_environment;
-use crate::hisho::config_models::{Environment, Process, Project};
-use crate::hisho::template::TemplateVariables;
-use crate::hisho::{build, containers, files, git, log, shell, template};
+use hisho_core::build;
+use hisho_core::config::fetch_environment;
+use hisho_core::config_models::{Environment, Process, Project};
+use hisho_core::containers;
+use hisho_core::files;
+use hisho_core::git;
+use hisho_core::log;
+use hisho_core::shell;
+use hisho_core::template;
+use hisho_core::template::TemplateVariables;
 
-pub async fn cli_main() {
+#[tokio::main]
+async fn main() {
     let version = env!("CARGO_PKG_VERSION");
     log::print(format!("Hisho v{} by Thomas Obernosterer", version));
     let default_service_file = "hisho.ron";

@@ -6,8 +6,8 @@
 use liquid::Object;
 use std::collections::HashMap;
 
-use crate::hisho::config_models::Process;
-use crate::hisho::log;
+use crate::config_models::Process;
+use crate::log;
 
 type TemplateVarMap = HashMap<String, HashMap<String, String>>;
 
@@ -110,13 +110,13 @@ pub fn render_process_with_argv(
         render_string(process.command.clone(), &args).map(|command| Process {
             command,
             args: rendered_proc_args,
-            cwd: workdir
+            cwd: workdir,
         })
     } else {
         Some(Process {
             command: process.command.clone(),
             args: rendered_proc_args,
-            cwd: workdir
+            cwd: workdir,
         })
     }
 }

@@ -99,7 +99,7 @@ Project(
       name: "run",
       shell: [
         Process(
-          command: "target/x86_64-unknown-linux-musl/debug/hisho",
+          command: "target/x86_64-unknown-linux-musl/debug/hisho_cli",
           args: ["echo-env"]
         ),
       ],
@@ -128,7 +128,7 @@ Project(
       name: "test-build",
       shell: [
         Process(
-          command: "target/x86_64-unknown-linux-musl/debug/hisho",
+          command: "target/x86_64-unknown-linux-musl/debug/hisho_cli",
           args: ["{{env.run_command}}"]
         ),
       ],

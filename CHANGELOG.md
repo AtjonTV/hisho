@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * Process now has `cwd` to specify the current working directory where the command is executed
 
+### Changed
+* Split Hisho into `hisho_core` and `hisho_cli` crates
+
 <!--
 ### Added
 ### Changed

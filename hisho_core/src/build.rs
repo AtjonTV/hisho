@@ -3,10 +3,13 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use crate::hisho::config_models::{BuildStep, BuildSteps, Command, Process};
-use crate::hisho::template::TemplateVariables;
-use crate::hisho::{log, shell, template};
 use std::collections::HashMap;
+
+use crate::config_models::{BuildStep, BuildSteps, Command, Process};
+use crate::log;
+use crate::shell;
+use crate::template;
+use crate::template::TemplateVariables;
 
 pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVariables) -> bool {
     if !cmd.depends_on_build.is_empty() {

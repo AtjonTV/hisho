@@ -17,7 +17,7 @@ job("Build") {
         }
 		fileArtifacts {
 			remotePath = "hisho-musl.bin"
-			localPath = "target/x86_64-unknown-linux-musl/release/hisho"
+			localPath = "target/x86_64-unknown-linux-musl/release/hisho_cli"
 		}
 		cache {
 			storeKey = "sccache-{{ hashFiles('.cache.lock') }}"
