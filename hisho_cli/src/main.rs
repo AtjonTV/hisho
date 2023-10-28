@@ -7,8 +7,8 @@ use ron::error::SpannedResult;
 use std::process::exit;
 use std::{env, fs};
 
-use hisho_core::build;
-use hisho_core::config::fetch_environment;
+use hisho_core::build_tool;
+use hisho_core::environment::fetch_environment;
 use hisho_core::config_models::{Environment, Process, Project};
 use hisho_core::containers;
 use hisho_core::files;
@@ -140,7 +140,7 @@ async fn main() {
                 }
 
                 // make sure required builds have run successfully
-                if !build::ensure_build(cmd, &project.build, &vars) {
+                if !build_tool::ensure_build(cmd, &project.build, &vars) {
                     return;
                 }
 

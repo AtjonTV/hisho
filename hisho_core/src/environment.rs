@@ -11,6 +11,9 @@ use crate::config_models::{BuildStep, Environment, Environments};
 use crate::log;
 use crate::template;
 
+/// Try to find the environment by name from the environments.
+///
+/// Also recursively resolve all sources and includes.
 pub fn fetch_environment(
     environment: &str,
     environments: &Environments,
@@ -93,30 +96,5 @@ fn load_env_from_file(
                 log::error(format!("Could not read environment file: {}", path));
             }
         }
-    }
-}
-
-impl Environment {
-    pub fn new_empty() -> Environment {
-        Environment {
-            name: "empty".to_string(),
-            inherits: Vec::new(),
-            values: HashMap::new(),
-            sources: Vec::new(),
-        }
-    }
-    pub fn new(name: &str, inherits: Vec<String>, values: HashMap<String, String>) -> Environment {
-        Environment {
-            name: name.to_string(),
-            inherits,
-            values,
-            sources: Vec::new(),
-        }
-    }
-}
-
-impl PartialEq for BuildStep {
-    fn eq(&self, other: &Self) -> bool {
-        self.name.eq(&other.name)
     }
 }

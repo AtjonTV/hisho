@@ -31,6 +31,25 @@ pub struct Environment {
 }
 pub type Environments = Vec<Environment>;
 
+impl Environment {
+    pub fn new_empty() -> Environment {
+        Environment {
+            name: "empty".to_string(),
+            inherits: Vec::new(),
+            values: HashMap::new(),
+            sources: Vec::new(),
+        }
+    }
+    pub fn new(name: &str, inherits: Vec<String>, values: HashMap<String, String>) -> Environment {
+        Environment {
+            name: name.to_string(),
+            inherits,
+            values,
+            sources: Vec::new(),
+        }
+    }
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Container {
     pub name: String,
@@ -70,3 +89,9 @@ pub struct BuildStep {
     pub input_files: Vec<String>,
 }
 pub type BuildSteps = Vec<BuildStep>;
+
+impl PartialEq for BuildStep {
+    fn eq(&self, other: &Self) -> bool {
+        self.name.eq(&other.name)
+    }
+}

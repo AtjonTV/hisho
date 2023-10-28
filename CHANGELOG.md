@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * Split Hisho into `hisho_core` and `hisho_cli` crates
+* Core: Moved `impl` blocks from `config` module to `config_models` module
+* Core: Renamed `config` module to `environment` module
+* Core: Renamed `build` module to `build_tool` module
 
 <!--
 ### Added

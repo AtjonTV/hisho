@@ -11,6 +11,24 @@ use crate::shell;
 use crate::template;
 use crate::template::TemplateVariables;
 
+/// Ensure that all build steps have been run successfully
+///
+/// 1. First all build steps that are required for the given command are collected from the given vector
+/// of build steps.
+/// 2. Then all of the found build steps are executed in sequence with the command outputs being printed
+/// to the standard output and standard error, as if the commands where executed manually.
+/// 3. Only if all the build steps executed with exist status 0, true is returned, otherwise false.
+///
+/// # Arguments
+///
+/// * `cmd` - The Command for which the build steps should be executed
+/// * `build_steps` - The list of build steps to consider. Only the steps required by the command are executed
+/// * `vars` - Variables for the template engine and for the execution environment variables
+///
+/// # Returns
+///
+/// * `true` if all existing build steps for cmd executed successfully
+/// * `false` otherwise
 pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVariables) -> bool {
     if !cmd.depends_on_build.is_empty() {
         log::print("Checking Build dependencies ..".to_string());
@@ -33,8 +51,22 @@ pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVari
     }
     true
 }
+fn resolve_files_from_globs(globs: &Vec<String>) -> Vec<String> {
+    let mut results: Vec<String> = Vec::new();
+    for glob_str in globs {
+        let matches = glob::glob(glob_str);
+        if let Ok(paths) = matches {
+            for path in paths.flatten() {
+                if let Some(path_str) = path.as_path().to_str() {
+                    results.push(path_str.to_string());
+                }
+            }
+        }
+    }
+    results
+}
 
-pub fn get_build_steps(
+fn get_build_steps(
     wanted_steps: &Vec<String>,
     build_steps: &BuildSteps,
     vars: &TemplateVariables,
@@ -113,19 +145,4 @@ fn create_build_vars(step: &BuildStep) -> HashMap<String, String> {
     );
     result.insert("name".to_string(), step.name.clone());
     result
-}
-
-fn resolve_files_from_globs(globs: &Vec<String>) -> Vec<String> {
-    let mut results: Vec<String> = Vec::new();
-    for glob_str in globs {
-        let matches = glob::glob(glob_str);
-        if let Ok(paths) = matches {
-            for path in paths.flatten() {
-                if let Some(path_str) = path.as_path().to_str() {
-                    results.push(path_str.to_string());
-                }
-            }
-        }
-    }
-    results
 }
