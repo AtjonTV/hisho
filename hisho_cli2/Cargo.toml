@@ -1,0 +1,20 @@
+[package]
+name = "hisho_cli2"
+version = "0.1.0"
+license = "MPL-2.0"
+authors = ["Thomas Obernosterer <thomas.obernosterer@atvg-studios.com>"]
+description = "Hisho CLI is a tool for local development with dependencies built using Hisho Core."
+keywords = ["tool", "dev", "development"]
+categories = ["command-line-utilities"]
+edition = "2021"
+rust-version = "1.73.0"
+
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+hisho_core = { path = "../hisho_core", version = "1.0.0-rc.2" }
+clap = "4.4.7"
+tokio = { version = "1.0.0", features = ["rt", "rt-multi-thread", "macros"] }
+ron = "0.8.1"

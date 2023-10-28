@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 * Core: `git::fetch_repo_vars` now includes `branch`, `commit_commiter_name` and `commit_committer_email`.
+* Cli2: Start implementation of a new Clap based command line interface
 
 <!--
 ### Added
