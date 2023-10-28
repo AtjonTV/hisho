@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Added
+* Core: `git::fetch_repo_vars` now includes `branch`, `commit_commiter_name` and `commit_committer_email`.
+
 <!--
 ### Added
 ### Changed

@@ -26,6 +26,9 @@ use std::path::Path;
 /// * `commit_date` - The date of the newest commit
 /// * `commit_author_name` - The name of the author of the newest commit
 /// * `commit_author_email` - The email of the author of the newest commit
+/// * `commit_committer_name` - The name of the committer of the newest commit
+/// * `commit_committer_email` - The email of the committer of the newest commit
+/// * `branch` - The current branch of the repository
 pub fn fetch_repo_vars(dir: &Path) -> HashMap<String, String> {
     let mut result: HashMap<String, String> = HashMap::new();
 
@@ -36,13 +39,20 @@ pub fn fetch_repo_vars(dir: &Path) -> HashMap<String, String> {
     result.insert("commit_date".to_string(), String::new());
     result.insert("commit_author_name".to_string(), String::new());
     result.insert("commit_author_email".to_string(), String::new());
+    result.insert("commit_committer_name".to_string(), String::new());
+    result.insert("commit_committer_email".to_string(), String::new());
+    result.insert("branch".to_string(), String::new());
     if let Ok(repo) = gix::discover(dir) {
         if let Ok(head) = repo.head() {
+            if head.is_detached() {
+                result.insert("branch".to_string(), "none".to_string());
+            }
             if let Some(head_id) = head.id() {
                 let long_sha = head_id.to_hex();
                 result.insert("commit_sha".to_string(), long_sha.to_string());
                 if let Ok(short_sha) = head_id.shorten() {
                     result.insert("commit_sha_short".to_string(), short_sha.to_string());
+                    result.insert("branch".to_string(), short_sha.to_string());
                 }
                 if let Ok(head_obj) = head_id.object() {
                     if let Ok(commit) = head_obj.try_into_commit() {
@@ -62,9 +72,22 @@ pub fn fetch_repo_vars(dir: &Path) -> HashMap<String, String> {
                                 commit_author.email.to_string(),
                             );
                         }
+                        if let Ok(commit_committer) = commit.committer() {
+                            result.insert(
+                                "commit_committer_name".to_string(),
+                                commit_committer.name.to_string(),
+                            );
+                            result.insert(
+                                "commit_committer_email".to_string(),
+                                commit_committer.email.to_string(),
+                            );
+                        }
                     }
                 }
             }
+        }
+        if let Ok(Some(head_ref)) = repo.head_name() {
+            result.insert("branch".to_string(), head_ref.shorten().to_string());
         }
     }
     result

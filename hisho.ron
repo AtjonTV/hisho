@@ -50,7 +50,7 @@ Project(
       shell: [
         Process(
           command: "echo",
-          args: ["job", "'{{build.name}}'", "git", "'{{git.commit_sha}}'", "'{{git.commit_sha_short}}'", "'{{git.commit_author_name}}'", "'{{git.commit_author_email}}'", "'{{git.commit_date}}'"]
+          args: ["job", "'{{build.name}}'", "git", "branch='{{git.branch}}'", "sha='{{git.commit_sha_short}}'", "'{{git.commit_author_name}}'", "'{{git.commit_author_email}}'", "'{{git.commit_date}}'"]
         )
       ],
       input_files: ["src/*.rs"]
