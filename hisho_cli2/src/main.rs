@@ -25,6 +25,7 @@ use std::{env, fs};
 #[tokio::main]
 async fn main() {
     let version = env!("CARGO_PKG_VERSION");
+    log::print(format!("Hisho v{} (hisho_cli2) by Thomas Obernosterer", version));
     let default_project_file = "hisho.ron";
 
     let matches = Command::new("hisho")
