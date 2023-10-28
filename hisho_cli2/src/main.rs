@@ -128,8 +128,10 @@ async fn main() {
                 .filter(|s| !s.0.is_empty() && !s.1.is_empty())
                 .collect::<HashMap<String, String>>();
 
+            let mut command_found = false;
             for cmd in &project.commands {
                 if cmd.name == *command_name {
+                    command_found = true;
                     // try to fetch an environment
                     let env = fetch_environment(
                         cmd.environment.clone().as_str(),
@@ -170,7 +172,15 @@ async fn main() {
                     for rendered_command in &rendered_commands {
                         let _ = shell::exec(rendered_command, vars.get("env"));
                     }
+                    break;
                 }
+            }
+            if !command_found {
+                log::error(format!(
+                    "Could not find command '{}'",
+                    command_name
+                ));
+                exit(2);
             }
         }
         _ => unreachable!(),
