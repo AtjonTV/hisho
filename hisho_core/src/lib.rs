@@ -4,9 +4,9 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 pub mod build_tool;
-pub mod environment;
 pub mod config_models;
 pub mod containers;
+pub mod environment;
 pub mod files;
 pub mod git;
 pub mod log;

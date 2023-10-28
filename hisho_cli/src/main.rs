@@ -8,9 +8,9 @@ use std::process::exit;
 use std::{env, fs};
 
 use hisho_core::build_tool;
-use hisho_core::environment::fetch_environment;
 use hisho_core::config_models::{Environment, Process, Project};
 use hisho_core::containers;
+use hisho_core::environment::fetch_environment;
 use hisho_core::files;
 use hisho_core::git;
 use hisho_core::log;
