@@ -17,7 +17,12 @@ pub fn resolve_path(path: String) -> Result<PathBuf, io::Error> {
     }
 }
 
-fn get_home_dir() -> Option<String> {
+/// Try to resolve the home directory of the current user.
+///
+/// We try to read the environment variable depending on the complication platform:
+/// * For Windows we try to read the `USERPROFILE` environment variable.
+/// * For Unix we try to read the `HOME` environment variable.
+pub fn get_home_dir() -> Option<String> {
     if cfg!(windows) {
         if let Ok(home_dir) = std::env::var("USERPROFILE") {
             return Some(home_dir);
