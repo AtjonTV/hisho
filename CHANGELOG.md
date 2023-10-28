@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Core: Moved `impl` blocks from `config` module to `config_models` module
 * Core: Renamed `config` module to `environment` module
 * Core: Renamed `build` module to `build_tool` module
+* Core: Make `resolve_files_from_globs` in `build_tool` module public
 
 <!--
 ### Added

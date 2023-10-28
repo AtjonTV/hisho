@@ -51,7 +51,15 @@ pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVari
     }
     true
 }
-fn resolve_files_from_globs(globs: &Vec<String>) -> Vec<String> {
+
+/// Resolve a list of globs into a list of file paths
+///
+/// The list of globs is resolved using the globs crate.
+///
+/// # Arguments
+///
+/// * `globs` - The list of globs to resolve
+pub fn resolve_files_from_globs(globs: &Vec<String>) -> Vec<String> {
     let mut results: Vec<String> = Vec::new();
     for glob_str in globs {
         let matches = glob::glob(glob_str);
