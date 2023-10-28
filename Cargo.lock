@@ -1447,9 +1447,7 @@ dependencies = [
  "liquid",
  "once_cell",
  "owo-colors",
- "ron",
  "serde",
- "tokio",
 ]
 
 [[package]]

@@ -14,6 +14,7 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
+# allows for the path of the executable to be templated
 allow_unsafe_command_templates = []
 
 [dependencies]
@@ -22,8 +23,6 @@ dotenv-parser = "0.1.3"
 glob = { version = "0.3.1", features = [] }
 liquid = "0.26.4"
 owo-colors = { version = "3.5.0", features = ["supports-colors"] }
-ron = "0.8.1"
 serde = { version = "1", features = ["derive"] }
-tokio = { version = "1.0.0", features = ["rt", "rt-multi-thread", "macros"] }
 once_cell = "1.18.0"
 gix = "0.55.2"
