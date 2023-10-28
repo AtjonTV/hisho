@@ -1,6 +1,10 @@
 use std::path::PathBuf;
 use std::{fs, io};
 
+/// Try to resolve a path using home resolution and canonicalization.
+///
+/// If `~` is present anywhere in the input path, we try to resolve it to the current users home directory.
+/// For this resolution we use the `get_home_dir()` function
 pub fn resolve_path(path: String) -> Result<PathBuf, io::Error> {
     let mut path_str = String::from(path.clone());
     if let Some(home_dir) = get_home_dir() {

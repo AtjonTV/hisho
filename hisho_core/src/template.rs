@@ -32,6 +32,7 @@ impl TemplateVariables {
     }
 }
 
+/// Try to render a string template with the given data for variables.
 pub fn render_string(template: String, data: &Object) -> Option<String> {
     let tp_engine = liquid::ParserBuilder::with_stdlib().build();
     if let Ok(engine) = &tp_engine {
@@ -61,6 +62,7 @@ pub fn render_string(template: String, data: &Object) -> Option<String> {
     None
 }
 
+/// Render each environment variable with the environment for variables
 pub fn render_environment(env: HashMap<String, String>) -> HashMap<String, String> {
     let mut result: HashMap<String, String> = HashMap::new();
     for (key, value) in &env {
@@ -69,11 +71,13 @@ pub fn render_environment(env: HashMap<String, String>) -> HashMap<String, Strin
     result
 }
 
+/// Try to render a process with the given args for variables.
 pub fn render_process(process: &Process, args: Object) -> Option<Process> {
     let argv = Vec::new();
     render_process_with_argv(process, args, &argv)
 }
 
+/// Try to expand `[[argv]]` in the process with the given argv vector.
 pub fn render_process_with_argv(
     process: &Process,
     args: Object,

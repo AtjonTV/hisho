@@ -10,6 +10,7 @@ use std::process::ExitStatus;
 use crate::config_models::Process;
 use crate::log;
 
+/// Execute a process with the given environment and return the exit status
 pub fn exec(process: &Process, env: Option<&HashMap<String, String>>) -> io::Result<ExitStatus> {
     // execute the command in /bin/sh
     let mut proc_command = std::process::Command::new(process.command.clone());

@@ -7,6 +7,22 @@ use gix::date::time::format::ISO8601_STRICT;
 use std::collections::HashMap;
 use std::path::Path;
 
+/// Fetch git repository metadata for a given path
+///
+/// If the given path is not a git repository, all the keys will be empty strings.
+///
+/// # Arguments
+///
+/// * `dir` - The path to the git repository
+///
+/// # Returns
+///
+/// A hash map containing the following keys:
+/// * `commit_sha` - The long hash of the newest commit
+/// * `commit_sha_short` - The short hash of the newest commit
+/// * `commit_date` - The date of the newest commit
+/// * `commit_author_name` - The name of the author of the newest commit
+/// * `commit_author_email` - The email of the author of the newest commit
 pub fn fetch_repo_vars(dir: &Path) -> HashMap<String, String> {
     let mut result: HashMap<String, String> = HashMap::new();
 

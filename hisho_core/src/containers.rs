@@ -12,6 +12,7 @@ use crate::log;
 use crate::template;
 use crate::template::TemplateVariables;
 
+/// Try to start the given containers if the exist and are stopped.
 pub async fn ensure_running(containers: &Containers, vars: &TemplateVariables) -> bool {
     if !containers.is_empty() {
         log::print("Checking Container dependencies ..".to_string());

@@ -6,10 +6,12 @@
 use once_cell::unsync::Lazy;
 use owo_colors::{OwoColorize, Style};
 
+/// Print to stdout with a colored prefix
 pub fn print(text: String) {
     println!("{} {}", get_tag(), text);
 }
 
+/// Print in red color to stderr with a colored prefix
 pub fn error(text: String) {
     let default_style: Lazy<Style> = Lazy::new(|| Style::new().red());
     eprintln!("{} {}", get_tag(), text.style(*default_style));
