@@ -6,8 +6,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use once_cell::unsync::Lazy;
-use owo_colors::{OwoColorize, Style};
+use color_print::cformat;
 
 /// Print to stdout with a colored prefix
 pub fn print(text: String) {
@@ -16,17 +15,14 @@ pub fn print(text: String) {
 
 /// Print in red color to stderr with a colored prefix
 pub fn error(text: String) {
-    let default_style: Lazy<Style> = Lazy::new(|| Style::new().red());
-    eprintln!("{} {}", get_tag(), text.style(*default_style));
+    eprintln!("{}", cformat!("{} <red>{}</>", get_tag(), text));
 }
 
 fn get_tag() -> String {
-    let bracket_style: Lazy<Style> = Lazy::new(|| Style::new().green());
-    let text_style: Lazy<Style> = Lazy::new(|| Style::new().cyan());
-    format!(
-        "{}{}{} ",
-        "[".style(*bracket_style),
-        "Hisho".style(*text_style),
-        "]".style(*bracket_style)
+    cformat!(
+        "<green>{}</><cyan>{}</><green>{}</> ",
+        "[",
+        "Hisho",
+        "]"
     )
 }

@@ -22,7 +22,7 @@ dockworker = "0.3.0"
 dotenv-parser = "0.1.3"
 glob = { version = "0.3.1", features = [] }
 liquid = "0.26.4"
-owo-colors = { version = "3.5.0", features = ["supports-colors"] }
+color-print = "0.3.5"
 serde = { version = "1", features = ["derive"] }
 once_cell = "1.18.0"
 gix = "0.55.2"
