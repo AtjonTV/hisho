@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+<!--
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
+-->
+
+## [1.0.0-rc.3] - 2023-10-28
+
 ### Added
 * Process now has `cwd` to specify the current working directory where the command is executed
 
@@ -20,15 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 * Core: Make `render_environment_value` in `template` module private
-
-<!--
-### Added
-### Changed
-### Deprecated
-### Removed
-### Fixed
-### Security
--->
 
 ## [1.0.0-rc.2] - 2023-10-20
 

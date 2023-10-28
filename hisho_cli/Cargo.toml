@@ -1,6 +1,6 @@
 [package]
 name = "hisho_cli"
-version = "1.0.0-rc.2"
+version = "1.0.0-rc.3"
 license = "MPL-2.0"
 authors = ["Thomas Obernosterer <thomas.obernosterer@atvg-studios.com>"]
 description = "Hisho CLI is a tool for local development with dependencies built using Hisho Core."
