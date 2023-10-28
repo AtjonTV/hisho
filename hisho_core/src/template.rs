@@ -69,21 +69,6 @@ pub fn render_environment(env: HashMap<String, String>) -> HashMap<String, Strin
     result
 }
 
-pub fn render_environment_value(
-    key: String,
-    value: String,
-    lookup_map: &HashMap<String, String>,
-    result_map: &mut HashMap<String, String>,
-) {
-    let mut vars = TemplateVariables::new();
-    vars.insert("env", lookup_map.clone());
-    if let Some(rendered_value) = render_string(value.clone(), &vars.as_value()) {
-        result_map.insert(key.clone(), rendered_value);
-    } else {
-        result_map.insert(key.clone(), value.clone());
-    }
-}
-
 pub fn render_process(process: &Process, args: Object) -> Option<Process> {
     let argv = Vec::new();
     render_process_with_argv(process, args, &argv)
@@ -140,6 +125,21 @@ fn expand_argv_label(data: &mut Vec<String>, argv: &Vec<String>) {
             .collect();
         // increment the offset by the amount of spliced items
         pos_offset += argv.len() - 1
+    }
+}
+
+fn render_environment_value(
+    key: String,
+    value: String,
+    lookup_map: &HashMap<String, String>,
+    result_map: &mut HashMap<String, String>,
+) {
+    let mut vars = TemplateVariables::new();
+    vars.insert("env", lookup_map.clone());
+    if let Some(rendered_value) = render_string(value.clone(), &vars.as_value()) {
+        result_map.insert(key.clone(), rendered_value);
+    } else {
+        result_map.insert(key.clone(), value.clone());
     }
 }
 

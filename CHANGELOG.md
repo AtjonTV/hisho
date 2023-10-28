@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Core: Make `resolve_files_from_globs` in `build_tool` module public
 * Core: Make `get_home_dir` in `files` module public
 
+### Removed
+* Core: Make `render_environment_value` in `template` module private
+
 <!--
 ### Added
 ### Changed
