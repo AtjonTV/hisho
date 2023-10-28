@@ -19,10 +19,5 @@ pub fn error(text: String) {
 }
 
 fn get_tag() -> String {
-    cformat!(
-        "<green>{}</><cyan>{}</><green>{}</> ",
-        "[",
-        "Hisho",
-        "]"
-    )
+    cformat!("<green>{}</><cyan>{}</><green>{}</> ", "[", "Hisho", "]")
 }
