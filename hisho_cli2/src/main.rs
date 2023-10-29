@@ -53,6 +53,26 @@ async fn main() -> io::Result<()> {
                         .num_args(1..),
                 )
                 .arg_required_else_help(true),
+        )
+        .subcommand(
+            Command::new("build")
+                .visible_aliases(["b", "make"])
+                .about("Run a build step")
+                .arg(
+                    Arg::new("build_step")
+                        .help("The build_step to run")
+                        .action(ArgAction::Set)
+                        .num_args(1..=1),
+                )
+                .arg(
+                    Arg::new("environment")
+                        .help("The environment to use")
+                        .short('e')
+                        .long("env")
+                        .default_value("")
+                        .action(ArgAction::Set),
+                )
+                .arg_required_else_help(true),
         );
     let matches = clap_command.clone().get_matches();
 
@@ -167,22 +187,66 @@ async fn main() -> io::Result<()> {
                 exit(2);
             }
         }
+        Some(("build", build_matches)) => {
+            let build_name = build_matches.get_one::<String>("build_step").unwrap();
+            let environment = build_matches.get_one::<String>("environment").unwrap();
+
+            let mut build_found = false;
+            for step in &project.build {
+                if step.name == *build_name {
+                    build_found = true;
+                    // try to fetch an environment
+                    let env =
+                        fetch_environment(environment.as_str(), &project.environments, workdir)
+                            .unwrap_or(Environment::new_empty());
+                    vars.insert("env", env.values);
+
+                    // make sure required containers are running
+                    if !containers::ensure_running(&project.containers, &vars).await {
+                        return Ok(());
+                    }
+
+                    let mut steps: Vec<String> = Vec::new();
+                    steps.push(step.name.clone());
+
+                    // make sure required builds have run successfully
+                    if !build_tool::ensure_steps_are_build(&steps, &project.build, &vars) {
+                        return Ok(());
+                    }
+                }
+            }
+            if !build_found {
+                log::error(format!("Could not find command '{}'", build_name));
+                exit(2);
+            }
+        }
         _ => {
-            if project.commands.is_empty() {
-                clap_command.clone().print_help()?;
-            } else {
+            let mut help_suffix = String::new();
+            if !project.build.is_empty() {
+                let known_builds = project
+                    .build
+                    .iter()
+                    .map(|cmd| format!("  {}", cmd.name.clone()))
+                    .collect::<Vec<String>>()
+                    .join("\n");
+                help_suffix += &*format!(
+                    "Build Steps from Project '{}':\n{}\n\n",
+                    project.name, known_builds
+                );
+            }
+            if !project.commands.is_empty() {
                 let known_commands = project
                     .commands
                     .iter()
                     .map(|cmd| format!("  {}", cmd.name.clone()))
                     .collect::<Vec<String>>()
                     .join("\n");
-                let help_suffix = format!(
-                    "Commands from Project '{}':\n{}",
+                help_suffix += &*format!(
+                    "Commands from Project '{}':\n{}\n\n",
                     project.name, known_commands
                 );
-                clap_command.after_help(help_suffix).print_help()?;
             }
+            clap_command.after_help(help_suffix).print_help()?;
         }
     }
     Ok(())
