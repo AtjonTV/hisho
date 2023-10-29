@@ -24,7 +24,10 @@ use hisho_core::template::TemplateVariables;
 #[tokio::main]
 async fn main() {
     let version = env!("CARGO_PKG_VERSION");
-    log::print(format!("Hisho v{} (hisho_cli) by Thomas Obernosterer", version));
+    log::print(format!(
+        "Hisho v{} (hisho_cli) by Thomas Obernosterer",
+        version
+    ));
     let default_service_file = "hisho.ron";
 
     // remove the program name from the arguments

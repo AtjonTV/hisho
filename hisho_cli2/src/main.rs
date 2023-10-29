@@ -19,14 +19,16 @@ use hisho_core::shell;
 use hisho_core::template;
 use hisho_core::template::TemplateVariables;
 use ron::error::SpannedResult;
-use std::collections::HashMap;
 use std::process::exit;
 use std::{env, fs};
 
 #[tokio::main]
 async fn main() {
     let version = env!("CARGO_PKG_VERSION");
-    log::print(format!("Hisho v{} (hisho_cli2) by Thomas Obernosterer", version));
+    log::print(format!(
+        "Hisho v{} (hisho_cli2) by Thomas Obernosterer",
+        version
+    ));
     let default_project_file = "hisho.ron";
 
     let matches = Command::new("hisho")
@@ -98,7 +100,7 @@ async fn main() {
     let project = project_data.unwrap();
 
     let mut vars = TemplateVariables::new();
-    vars.insert("git", git::fetch_repo_vars(&workdir));
+    vars.insert("git", git::fetch_repo_vars(workdir));
 
     match matches.subcommand() {
         Some(("run", run_matches)) => {
@@ -162,10 +164,7 @@ async fn main() {
                 }
             }
             if !command_found {
-                log::error(format!(
-                    "Could not find command '{}'",
-                    command_name
-                ));
+                log::error(format!("Could not find command '{}'", command_name));
                 exit(2);
             }
         }
