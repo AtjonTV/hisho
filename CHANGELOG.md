@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### Added
-* Core: `git::fetch_repo_vars` now includes `branch`, `commit_commiter_name` and `commit_committer_email`.
-* Cli2: Start implementation of a new Clap based command line interface
-
 <!--
 ### Added
 ### Changed
@@ -19,6 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 -->
+
+## [1.0.0-rc.4] - 2023-10-29
+
+### Added
+* Core: `git::fetch_repo_vars` now includes `branch`, `commit_commiter_name` and `commit_committer_email`.
+* Core: `arg_parse::parse` a simple argument parser for flags and options
+* Cli2: Start implementation of a new Clap based command line interface
+* Cli2: Support option parsing for `arg.` templates
+* Cli2: Print project commands in help output
+* Cli2: `run` now as the aliases `r` and `cmd`
+
+### Deprecated
+* Cli: hisho_cli is now deprecated, please use hisho_cli2 instead
 
 ## [1.0.0-rc.3] - 2023-10-28
 

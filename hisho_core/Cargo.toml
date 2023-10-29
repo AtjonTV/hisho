@@ -1,6 +1,6 @@
 [package]
 name = "hisho_core"
-version = "1.0.0-rc.3"
+version = "1.0.0-rc.4"
 license = "MPL-2.0"
 authors = ["Thomas Obernosterer <thomas.obernosterer@atvg-studios.com>"]
 description = "Hisho Core provides APIs to build untilities that aim to aid software development."
