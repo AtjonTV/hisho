@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Added
+* Core: `build_tool::ensure_steps_are_build` for building a custom set of steps
+
 <!--
 ### Added
 ### Changed

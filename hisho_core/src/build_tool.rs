@@ -33,10 +33,35 @@ use crate::template::TemplateVariables;
 /// * `true` if all existing build steps for cmd executed successfully
 /// * `false` otherwise
 pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVariables) -> bool {
-    if !cmd.depends_on_build.is_empty() {
+    ensure_steps_are_build(&cmd.depends_on_build, build_steps, vars)
+}
+
+/// Ensure that all build steps have been run successfully
+///
+/// 1. First all build steps that are required
+/// 2. Then all of the found build steps are executed in sequence with the command outputs being printed
+/// to the standard output and standard error, as if the commands where executed manually.
+/// 3. Only if all the build steps executed with exist status 0, true is returned, otherwise false.
+///
+/// # Arguments
+///
+/// * `steps` - The list of build steps by name that should be executed
+/// * `build_steps` - The list of build steps to consider.
+/// * `vars` - Variables for the template engine and for the execution environment variables
+///
+/// # Returns
+///
+/// * `true` if all existing build steps for cmd executed successfully
+/// * `false` otherwise
+pub fn ensure_steps_are_build(
+    steps: &Vec<String>,
+    build_steps: &BuildSteps,
+    vars: &TemplateVariables,
+) -> bool {
+    if !steps.is_empty() {
         log::print("Checking Build dependencies ..".to_string());
 
-        let build_steps = get_build_steps(&cmd.depends_on_build, build_steps, &vars);
+        let build_steps = get_build_steps(steps, build_steps, vars);
         for (step_name, shell) in build_steps {
             for proc in shell {
                 log::print(format!("\tRunning build step: {}", step_name));
