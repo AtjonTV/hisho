@@ -115,12 +115,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bddcadddf5e9015d310179a59bb28c4d4b9920ad0f11e8e14dbadf654890c9a6"
 
 [[package]]
-name = "argust"
-version = "0.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "64cfab3ad3edc74a39d7382aa4b8baf61302c861a9c2d235615a9344c1a22f12"
-
-[[package]]
 name = "arrayvec"
 version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1509,18 +1503,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
-name = "hisho_cli"
-version = "1.0.0-rc.3"
-dependencies = [
- "argust",
- "hisho_core",
- "ron",
- "tokio",
-]
-
-[[package]]
 name = "hisho_cli2"
-version = "0.1.0"
+version = "1.0.0-rc.4"
 dependencies = [
  "clap",
  "hisho_core",
@@ -1530,7 +1514,7 @@ dependencies = [
 
 [[package]]
 name = "hisho_core"
-version = "1.0.0-rc.3"
+version = "1.0.0-rc.4"
 dependencies = [
  "color-print",
  "dockworker",
