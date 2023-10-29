@@ -7,6 +7,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 use clap::{Arg, ArgAction, Command};
+use hisho_core::arg_parse;
 use hisho_core::build_tool;
 use hisho_core::config_models::{Environment, Process, Project};
 use hisho_core::containers;
@@ -101,32 +102,19 @@ async fn main() {
 
     match matches.subcommand() {
         Some(("run", run_matches)) => {
-            let command_name = run_matches
-                .get_one::<String>("command")
-                .expect("No command given");
-            let command_args = run_matches
+            // Collect all the arguments for this subcommand
+            let args = run_matches
                 .get_many::<String>("command")
                 .unwrap()
                 .map(|s| s.to_string())
-                .filter(|s| !s.starts_with("-"))
                 .skip(1)
                 .collect::<Vec<String>>();
-            let command_flags = run_matches
-                .get_many::<String>("command")
-                .unwrap()
-                .map(|s| s.to_string())
-                .filter(|s| s.starts_with("-"))
-                .map(|s| {
-                    let stripped = s.replace("-", "");
-                    let parts = stripped.split("=").collect::<Vec<&str>>();
-                    if parts.len() == 2 {
-                        (parts[0].to_string(), parts[1].to_string())
-                    } else {
-                        (String::new(), String::new())
-                    }
-                })
-                .filter(|s| !s.0.is_empty() && !s.1.is_empty())
-                .collect::<HashMap<String, String>>();
+
+            // take the first argument as command name
+            let command_name = args.first().unwrap();
+
+            // parse options from the arguments for arg template variables
+            let command_options = arg_parse::parse(args.clone());
 
             let mut command_found = false;
             for cmd in &project.commands {
@@ -158,13 +146,11 @@ async fn main() {
                     }
 
                     let mut rendered_commands: Vec<Process> = Vec::new();
-                    vars.insert("arg", command_flags.clone());
+                    vars.insert("arg", command_options.clone());
                     for shell_cmd in &cmd.shell {
-                        if let Some(rendered_command) = template::render_process_with_argv(
-                            shell_cmd,
-                            vars.as_value(),
-                            &command_args,
-                        ) {
+                        if let Some(rendered_command) =
+                            template::render_process_with_argv(shell_cmd, vars.as_value(), &args)
+                        {
                             rendered_commands.push(rendered_command);
                         }
                     }
