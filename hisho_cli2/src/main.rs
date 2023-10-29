@@ -109,7 +109,6 @@ async fn main() {
                 .get_many::<String>("command")
                 .unwrap()
                 .map(|s| s.to_string())
-                .skip(1)
                 .collect::<Vec<String>>();
 
             // take the first argument as command name
