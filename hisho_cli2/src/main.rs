@@ -43,7 +43,6 @@ async fn main() -> io::Result<()> {
         )
         .subcommand(
             Command::new("run")
-                .aliases(["r", "cmd"])
                 .visible_aliases(["r", "cmd"])
                 .about("Run a command")
                 .arg(
