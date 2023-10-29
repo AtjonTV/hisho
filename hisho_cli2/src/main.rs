@@ -20,10 +20,10 @@ use hisho_core::template;
 use hisho_core::template::TemplateVariables;
 use ron::error::SpannedResult;
 use std::process::exit;
-use std::{env, fs};
+use std::{env, fs, io};
 
 #[tokio::main]
-async fn main() {
+async fn main() -> io::Result<()> {
     let version = env!("CARGO_PKG_VERSION");
     log::print(format!(
         "Hisho v{} (hisho_cli2) by Thomas Obernosterer",
@@ -31,13 +31,11 @@ async fn main() {
     ));
     let default_project_file = "hisho.ron";
 
-    let matches = Command::new("hisho")
+    let clap_command = Command::new("hisho")
         .about(
             "Hisho CLI is a tool for local development with dependencies built using Hisho Core.",
         )
         .version(version)
-        .subcommand_required(true)
-        .arg_required_else_help(true)
         .author("Thomas Obernosterer")
         .arg(
             Arg::new("project-file")
@@ -60,8 +58,8 @@ async fn main() {
                         .num_args(1..),
                 )
                 .arg_required_else_help(true),
-        )
-        .get_matches();
+        );
+    let matches = clap_command.clone().get_matches();
 
     let project_file_path = matches.get_one::<String>("project-file").unwrap();
 
@@ -134,18 +132,18 @@ async fn main() {
 
                     // make sure required containers are running
                     if !containers::ensure_running(&project.containers, &vars).await {
-                        return;
+                        return Ok(());
                     }
 
                     // make sure required builds have run successfully
                     if !build_tool::ensure_build(cmd, &project.build, &vars) {
-                        return;
+                        return Ok(());
                     }
 
                     // if there is no shell defined, do nothing and return
                     if cmd.shell.is_empty() {
                         log::print("No shell, nothing to do. Exiting..".to_string());
-                        return;
+                        return Ok(());
                     }
 
                     let mut rendered_commands: Vec<Process> = Vec::new();
@@ -169,6 +167,23 @@ async fn main() {
                 exit(2);
             }
         }
-        _ => unreachable!(),
+        _ => {
+            if project.commands.is_empty() {
+                clap_command.clone().print_help()?;
+            } else {
+                let known_commands = project
+                    .commands
+                    .iter()
+                    .map(|cmd| format!("  {}", cmd.name.clone()))
+                    .collect::<Vec<String>>()
+                    .join("\n");
+                let help_suffix = format!(
+                    "Commands from Project '{}':\n{}",
+                    project.name, known_commands
+                );
+                clap_command.after_help(help_suffix).print_help()?;
+            }
+        }
     }
+    Ok(())
 }
