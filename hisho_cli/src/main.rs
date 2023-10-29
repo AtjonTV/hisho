@@ -28,6 +28,7 @@ async fn main() {
         "Hisho v{} (hisho_cli) by Thomas Obernosterer",
         version
     ));
+    log::error("WARNING: hisho_cli is deprecated. Please use hisho_cli2.".to_string());
     let default_service_file = "hisho.ron";
 
     // remove the program name from the arguments
