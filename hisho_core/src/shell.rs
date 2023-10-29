@@ -31,16 +31,27 @@ pub fn exec(process: &Process, env: Option<&HashMap<String, String>>) -> io::Res
     let proc_result = proc_command.status();
     if let Ok(output) = &proc_result {
         log::print(format!(
-            "Command '{} {}' executed. ({})",
+            "Command '{}' {:?} executed{}. ({})",
             process.command,
-            process.args.join(" "),
+            process.args,
+            if !process.cwd.is_empty() {
+                format!(" in directory '{}'", process.cwd)
+            } else {
+                String::new()
+            },
             output
         ));
     } else {
         log::error(format!(
-            "Could not execute command: {} {}",
+            "Could not execute command '{}' {:?}{}: {:?}",
             process.command,
-            process.args.join(" ")
+            process.args,
+            if !process.cwd.is_empty() {
+                format!(" in directory '{}'", process.cwd)
+            } else {
+                String::new()
+            },
+            proc_result
         ));
     }
     proc_result

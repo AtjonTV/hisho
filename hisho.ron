@@ -91,7 +91,12 @@ Project(
         Process(
           command: "ls",
           args: ["-l"],
-          cwd: "./src/hisho"
+          cwd: "./hisho_core/src"
+        ),
+        Process(
+          command: "ls",
+          args: ["-l"],
+          cwd: "./hisho_cli2/src"
         ),
       ],
     ),
