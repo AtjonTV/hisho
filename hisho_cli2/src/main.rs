@@ -25,10 +25,6 @@ use std::{env, fs, io};
 #[tokio::main]
 async fn main() -> io::Result<()> {
     let version = env!("CARGO_PKG_VERSION");
-    log::print(format!(
-        "Hisho v{} (hisho_cli2) by Thomas Obernosterer",
-        version
-    ));
     let default_project_file = "hisho.ron";
 
     let clap_command = Command::new("hisho")
@@ -60,6 +56,11 @@ async fn main() -> io::Result<()> {
                 .arg_required_else_help(true),
         );
     let matches = clap_command.clone().get_matches();
+
+    log::print(format!(
+        "Hisho v{} (hisho_cli2) by Thomas Obernosterer",
+        version
+    ));
 
     let project_file_path = matches.get_one::<String>("project-file").unwrap();
 
