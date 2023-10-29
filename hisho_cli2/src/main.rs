@@ -49,6 +49,7 @@ async fn main() {
         )
         .subcommand(
             Command::new("run")
+                .alias("r")
                 .about("Run a command")
                 .arg(
                     Arg::new("command")
