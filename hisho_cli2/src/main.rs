@@ -85,7 +85,7 @@ async fn main() -> io::Result<()> {
 
     let project_file = files::resolve_path(project_file_path.clone()).unwrap_or_else(|e| {
         log::error(format!(
-            "Could not find service file '{}': {:?}",
+            "Could not find project file '{}': {:?}",
             project_file_path,
             e.to_string()
         ));
@@ -93,7 +93,7 @@ async fn main() -> io::Result<()> {
     });
     let workdir = project_file.parent().unwrap_or_else(|| {
         log::error(format!(
-            "Could not resolve parent directory of service file '{}'",
+            "Could not resolve parent directory of project file '{}'",
             project_file_path,
         ));
         exit(2);
@@ -102,7 +102,7 @@ async fn main() -> io::Result<()> {
     let data_from_file = fs::read_to_string(project_file_path.clone());
     if let Err(e) = data_from_file {
         log::error(format!(
-            "Could not read service file '{}': {:?}",
+            "Could not read project file '{}': {:?}",
             project_file_path,
             e.to_string()
         ));
@@ -111,7 +111,7 @@ async fn main() -> io::Result<()> {
     let project_data: SpannedResult<Project> = ron::from_str(data_from_file.unwrap().as_str());
     if let Err(e) = project_data {
         log::error(format!(
-            "Could not parse service file '{}': {:?}",
+            "Could not parse project file '{}': {:?}",
             project_file_path,
             e.to_string()
         ));
