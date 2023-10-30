@@ -14,6 +14,11 @@ use crate::shell;
 use crate::template;
 use crate::template::TemplateVariables;
 
+#[deprecated(since = "1.1.0-dev.0", note = "Use `run_builds` instead")]
+pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVariables) -> bool {
+    run_steps_for_command(cmd, build_steps, vars)
+}
+
 /// Ensure that all build steps have been run successfully
 ///
 /// 1. First all build steps that are required for the given command are collected from the given vector
@@ -32,8 +37,22 @@ use crate::template::TemplateVariables;
 ///
 /// * `true` if all existing build steps for cmd executed successfully
 /// * `false` otherwise
-pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVariables) -> bool {
-    ensure_steps_are_build(&cmd.depends_on_build, build_steps, vars)
+///
+pub fn run_steps_for_command(
+    cmd: &Command,
+    build_steps: &BuildSteps,
+    vars: &TemplateVariables,
+) -> bool {
+    run_steps(&cmd.depends_on_build, build_steps, vars)
+}
+
+#[deprecated(since = "1.1.0-dev.0", note = "Use `run_steps` instead")]
+pub fn ensure_steps_are_build(
+    steps: &Vec<String>,
+    build_steps: &BuildSteps,
+    vars: &TemplateVariables,
+) -> bool {
+    run_steps(steps, build_steps, vars)
 }
 
 /// Ensure that all build steps have been run successfully
@@ -53,11 +72,7 @@ pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVari
 ///
 /// * `true` if all existing build steps for cmd executed successfully
 /// * `false` otherwise
-pub fn ensure_steps_are_build(
-    steps: &Vec<String>,
-    build_steps: &BuildSteps,
-    vars: &TemplateVariables,
-) -> bool {
+pub fn run_steps(steps: &Vec<String>, build_steps: &BuildSteps, vars: &TemplateVariables) -> bool {
     if !steps.is_empty() {
         log::print("Checking Build dependencies ..".to_string());
 
