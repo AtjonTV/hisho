@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### Added
-* Core: `build_tool::ensure_steps_are_build` for building a custom set of steps
-* Cli2: `build` (`b`, `make`) subcommand for building a build step
-
-### Removed
-* Cli: `hisho_cli` has been removed.
 
 <!--
 ### Added
@@ -22,6 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 -->
+
+## [1.0.0-rc.5] - 2023-10-30
+
+### Added
+* Core: `build_tool::ensure_steps_are_build` for building a custom set of steps
+* Cli2: `build` (`b`, `make`) subcommand for building a build step
+
+### Removed
+* Cli: `hisho_cli` has been removed.
 
 ## [1.0.0-rc.4] - 2023-10-29
 
