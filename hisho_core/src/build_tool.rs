@@ -8,11 +8,13 @@
 
 use std::collections::HashMap;
 
-use crate::config_models::{BuildStep, BuildSteps, Command, Process};
-use crate::log;
+use crate::config_models::{BuildStep, BuildSteps, Command, Environment, Process, Project};
+use crate::environment::fetch_environment;
 use crate::shell;
 use crate::template;
 use crate::template::TemplateVariables;
+use crate::{containers, files, log};
+
 /////// DEPRECATED SECTION BEGIN ///////
 
 #[deprecated(since = "1.1.0-dev.0", note = "Use `run_builds` instead")]
@@ -30,6 +32,37 @@ pub fn ensure_steps_are_build(
 }
 
 /////// DEPRECATED SECTION END  ///////
+
+pub async fn run_build(
+    project: &Project,
+    step: &BuildStep,
+    environment: &str,
+    default_vars: &TemplateVariables,
+) -> bool {
+    let mut vars = default_vars.clone();
+    let env = fetch_environment(
+        environment,
+        &project.environments,
+        files::string_to_path(&project.workdir).as_path(),
+    )
+    .unwrap_or(Environment::new_empty());
+    vars.insert("env", env.values);
+
+    // make sure required containers are running
+    if !containers::start_containers(&project.containers, &vars).await {
+        return false;
+    }
+
+    let steps: Vec<String> = vec![step.name.clone()];
+
+    // make sure required builds have run successfully
+    if !run_steps(&steps, &project.build, &vars) {
+        return false;
+    }
+
+    true
+}
+
 /// Ensure that all build steps have been run successfully
 ///
 /// 1. First all build steps that are required for the given command are collected from the given vector

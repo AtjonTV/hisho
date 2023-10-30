@@ -47,3 +47,7 @@ pub fn get_home_dir() -> Option<String> {
 
     None
 }
+
+pub fn string_to_path(path: &String) -> PathBuf {
+    PathBuf::from(path.clone())
+}

@@ -8,6 +8,7 @@
 
 pub mod arg_parse;
 pub mod build_tool;
+pub mod command;
 pub mod config_models;
 pub mod containers;
 pub mod environment;

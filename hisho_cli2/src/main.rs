@@ -7,17 +7,13 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 use clap::{Arg, ArgAction, Command};
-use hisho_core::arg_parse;
 use hisho_core::build_tool;
-use hisho_core::config_models::{Environment, Process, Project};
-use hisho_core::containers;
-use hisho_core::environment::fetch_environment;
+use hisho_core::config_models::Project;
 use hisho_core::files;
 use hisho_core::git;
 use hisho_core::log;
-use hisho_core::shell;
-use hisho_core::template;
 use hisho_core::template::TemplateVariables;
+use hisho_core::{arg_parse, command};
 use ron::error::SpannedResult;
 use std::process::exit;
 use std::{env, fs, io};
@@ -117,7 +113,13 @@ async fn main() -> io::Result<()> {
         ));
         exit(2);
     }
-    let project = project_data.unwrap();
+    let mut project_mut = project_data.unwrap();
+    project_mut.workdir = workdir
+        .to_path_buf()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    let project: Project = project_mut;
 
     let mut vars = TemplateVariables::new();
     vars.insert("git", git::fetch_repo_vars(workdir));
@@ -141,44 +143,10 @@ async fn main() -> io::Result<()> {
             for cmd in &project.commands {
                 if cmd.name == *command_name {
                     command_found = true;
-                    // try to fetch an environment
-                    let env = fetch_environment(
-                        cmd.environment.clone().as_str(),
-                        &project.environments,
-                        workdir,
-                    )
-                    .unwrap_or(Environment::new_empty());
-                    vars.insert("env", env.values);
 
-                    // make sure required containers are running
-                    if !containers::ensure_running(&project.containers, &vars).await {
-                        return Ok(());
-                    }
-
-                    // make sure required builds have run successfully
-                    if !build_tool::ensure_build(cmd, &project.build, &vars) {
-                        return Ok(());
-                    }
-
-                    // if there is no shell defined, do nothing and return
-                    if cmd.shell.is_empty() {
-                        log::print("No shell, nothing to do. Exiting..".to_string());
-                        return Ok(());
-                    }
-
-                    let mut rendered_commands: Vec<Process> = Vec::new();
                     vars.insert("arg", command_options.clone());
-                    for shell_cmd in &cmd.shell {
-                        if let Some(rendered_command) =
-                            template::render_process_with_argv(shell_cmd, vars.as_value(), &args)
-                        {
-                            rendered_commands.push(rendered_command);
-                        }
-                    }
 
-                    for rendered_command in &rendered_commands {
-                        let _ = shell::exec(rendered_command, vars.get("env"));
-                    }
+                    command::run_command(&project, cmd, &vars, &args).await;
                     break;
                 }
             }
@@ -195,24 +163,9 @@ async fn main() -> io::Result<()> {
             for step in &project.build {
                 if step.name == *build_name {
                     build_found = true;
-                    // try to fetch an environment
-                    let env =
-                        fetch_environment(environment.as_str(), &project.environments, workdir)
-                            .unwrap_or(Environment::new_empty());
-                    vars.insert("env", env.values);
 
-                    // make sure required containers are running
-                    if !containers::ensure_running(&project.containers, &vars).await {
-                        return Ok(());
-                    }
-
-                    let mut steps: Vec<String> = Vec::new();
-                    steps.push(step.name.clone());
-
-                    // make sure required builds have run successfully
-                    if !build_tool::ensure_steps_are_build(&steps, &project.build, &vars) {
-                        return Ok(());
-                    }
+                    build_tool::run_build(&project, step, environment.as_str(), &vars).await;
+                    break;
                 }
             }
             if !build_found {

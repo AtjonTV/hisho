@@ -20,6 +20,10 @@ pub struct Project {
     pub build: BuildSteps,
     #[serde(default)]
     pub commands: Commands,
+
+    // this is a runtime variable
+    #[serde(skip)]
+    pub workdir: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
