@@ -14,9 +14,9 @@ use std::{fs, io};
 /// If `~` is present anywhere in the input path, we try to resolve it to the current users home directory.
 /// For this resolution we use the `get_home_dir()` function
 pub fn resolve_path(path: String) -> Result<PathBuf, io::Error> {
-    let mut path_str = String::from(path.clone());
+    let mut path_str = path.clone();
     if let Some(home_dir) = get_home_dir() {
-        path_str = path_str.replace("~", home_dir.as_str());
+        path_str = path_str.replace('~', home_dir.as_str());
     }
     let path_buf_res = fs::canonicalize(path_str);
     if let Ok(path_buf) = path_buf_res {
