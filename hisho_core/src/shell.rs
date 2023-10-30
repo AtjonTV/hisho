@@ -23,8 +23,8 @@ pub fn exec(process: &Process, env: Option<&HashMap<String, String>>) -> io::Res
         proc_command.current_dir(process.cwd.clone());
     }
 
-    if env.is_some() {
-        proc_command.envs(env.unwrap().clone());
+    if let Some(env) = env {
+        proc_command.envs(env.clone());
     }
 
     // Check if the command succeeded
