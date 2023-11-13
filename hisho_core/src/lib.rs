@@ -16,4 +16,5 @@ pub mod files;
 pub mod git;
 pub mod log;
 pub mod shell;
+pub mod service;
 pub mod template;

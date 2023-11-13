@@ -75,6 +75,13 @@ Project(
       ],
     ),
   ],
+  services: [
+    Service(
+      name: "cloudflare",
+      protocol: HTTP,
+      uri: "https://cloudflare.com"
+    ),
+  ],
   commands: [
     Command(
       name: "exec",
@@ -134,7 +141,7 @@ Project(
       shell: [
         Process(
           command: "target/x86_64-unknown-linux-musl/debug/hisho_cli2",
-          args: ["{{env.run_command}}"]
+          args: ["run", "{{env.run_command}}"]
         ),
       ],
       environment: "test",

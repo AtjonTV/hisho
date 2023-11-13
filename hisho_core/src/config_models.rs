@@ -19,6 +19,8 @@ pub struct Project {
     #[serde(default)]
     pub build: BuildSteps,
     #[serde(default)]
+    pub services: Services,
+    #[serde(default)]
     pub commands: Commands,
 
     // this is a runtime variable
@@ -96,6 +98,20 @@ pub struct BuildStep {
     pub input_files: Vec<String>,
 }
 pub type BuildSteps = Vec<BuildStep>;
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Service {
+    pub name: String,
+    pub protocol: ServiceProtocol,
+    pub uri: String,
+}
+pub type Services = Vec<Service>;
+
+#[derive(Debug, Clone, Copy, Deserialize, Serialize)]
+pub enum ServiceProtocol {
+    HTTP,
+    TCP,
+}
 
 impl PartialEq for BuildStep {
     fn eq(&self, other: &Self) -> bool {

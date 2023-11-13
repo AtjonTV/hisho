@@ -9,7 +9,7 @@
 use crate::config_models::{Command, Environment, Process, Project};
 use crate::environment::fetch_environment;
 use crate::template::TemplateVariables;
-use crate::{build_tool, containers, files, log, shell, template};
+use crate::{build_tool, containers, files, log, shell, service, template};
 
 /// Run a command with all its dependencies
 pub async fn run_command(
@@ -29,6 +29,11 @@ pub async fn run_command(
 
     // make sure required containers are running
     if !containers::start_containers(&project.containers, &vars).await {
+        return false;
+    }
+
+    // make sure required services are running
+    if !service::are_running(&project.services).await {
         return false;
     }
 
