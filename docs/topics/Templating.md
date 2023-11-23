@@ -6,7 +6,7 @@ The topics for build steps and commands already scratch the surface of the templ
 But they do not cover what the templating can actually do.
 
 We use the rust implementation of the [Shopify Liquid](https://shopify.github.io/liquid/) templating engine.  
-To allow you the most customizability for templating, we enabled all of the standard filters.
+To allow you the most customizable templating, we enabled all the standard filters.
 
 ## Variable scopes
 
