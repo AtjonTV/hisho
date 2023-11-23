@@ -8,6 +8,7 @@ The `Project` is our top-level, it contains everything.
 | environments | no       | []      | List of Environment Objects        |
 | containers   | no       | []      | List of Container Objects          |
 | build        | no       | []      | List of BuildStep Objects          |
+| services     | no       | []      | List of Service Objects            |
 | commands     | no       | []      | List of Command Objects            |
 
 Example:
@@ -17,6 +18,7 @@ Project(
   environments: [],
   containers: [],
   build: [],
+  services: [],
   commands: [], 
 )
 ```
