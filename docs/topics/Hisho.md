@@ -13,6 +13,13 @@ Hisho officially only supports Linux on AMD64 CPUs, being build with Rust 1.73+ 
 
 While Hisho tries to be platform-agnostic, there is no guarantee that it works on other platforms.
 
+## Git Repository
+
+The main Git repository of Hisho is private.
+
+However, there is a public mirror on [GitHub](https://github.com/AtjonTV/hisho)
+where Issues and Merge-Requests can be submitted to.
+
 ## License
 This code is licensed under the Mozilla Public License, 2.0.  
 You can find a copy of the license in the LICENSE.txt file or [online](http://mozilla.org/MPL/2.0/).
