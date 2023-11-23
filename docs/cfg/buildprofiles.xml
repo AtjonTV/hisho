@@ -7,4 +7,11 @@
     <footer>
         <copyright>2023 Thomas Obernosterer</copyright>
     </footer>
+
+    <build-profile instance="h">
+        <variables>
+            <noindex-content>false</noindex-content>
+            <versions-switcher>https://hisho.run/help-versions.json</versions-switcher>
+        </variables>
+    </build-profile>
 </buildprofiles>
