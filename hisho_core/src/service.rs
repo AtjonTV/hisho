@@ -60,43 +60,43 @@ mod tests {
     use super::*;
     use crate::config_models::{Service, ServiceProtocol};
 
-    #[test]
-    fn cloudflare_is_running() {
+    #[tokio::test]
+    async fn cloudflare_is_running() {
         let test_service = Service {
             name: "cloudflare".to_string(),
             protocol: ServiceProtocol::HTTP,
             uri: "https://cloudflare.com".to_string(),
         };
-        assert_eq!(is_running(&test_service), true);
+        assert!(is_running(&test_service).await);
     }
 
-    #[test]
-    fn cloudflare_tcp_ping() {
+    #[tokio::test]
+    async fn cloudflare_tcp_ping() {
         let test_service = Service {
             name: "cloudflare tcp".to_string(),
             protocol: ServiceProtocol::TCP,
             uri: "cloudflare.com:80".to_string(),
         };
-        assert_eq!(is_running(&test_service), true);
+        assert!(is_running(&test_service).await);
     }
 
-    #[test]
-    fn ip_172_32_137_254_port_31330_is_offline() {
+    #[tokio::test]
+    async fn ip_172_32_137_254_port_31330_is_offline() {
         let test_service = Service {
             name: "172.32.137.254:31330".to_string(),
             protocol: ServiceProtocol::HTTP,
             uri: "http://172.32.137.254:31330/status".to_string(),
         };
-        assert_eq!(is_running(&test_service), false);
+        assert_eq!(is_running(&test_service).await, false);
     }
 
-    #[test]
-    fn ip_172_32_137_254_port_31330_wont_tcp_ping() {
+    #[tokio::test]
+    async fn ip_172_32_137_254_port_31330_wont_tcp_ping() {
         let test_service = Service {
             name: "172.32.137.254:31330".to_string(),
             protocol: ServiceProtocol::TCP,
             uri: "172.32.137.254:31330".to_string(),
         };
-        assert_eq!(is_running(&test_service), false);
+        assert_eq!(is_running(&test_service).await, false);
     }
 }
