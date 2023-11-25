@@ -3,12 +3,12 @@
 The `Environment` is used to define environment variables.  
 These variables can be used for templating and are passed to commands when they are executed.
 
-| Name     | Required | Default | Description                                       |
-|----------|----------|---------|---------------------------------------------------|
-| name     | yes      | -       | Human readable name of the Environment            |
-| inherits | no       | []      | List of other Environments to copy variables from |
-| sources  | no       | []      | List of .env files to copy from                   |
-| values   | no       | {}      | Map of string-value variables                     |
+| Name     | Required | Default | Type                    | Description                                       |
+|----------|----------|---------|-------------------------|---------------------------------------------------|
+| name     | yes      | -       | String                  | Human readable name of the Environment            |
+| inherits | no       | []      | List of String          | List of other Environments to copy variables from |
+| sources  | no       | []      | List of String          | List of .env files to copy from                   |
+| values   | no       | {}      | Map of String to String | Map of string-value variables                     |
 
 Environments have three sources of variables: parent environments `inherits`, .env files `sources` and a key-value map
 

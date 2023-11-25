@@ -8,9 +8,18 @@
 
     <toc-element topic="Hisho.md">
     </toc-element>
-    <toc-element topic="00-Project-Configuration.md">
-        <toc-element topic="01-Project.md"/>
-        <toc-element topic="02-Environment.md"/>
+    <toc-element topic="00-00-Project-Configuration.md">
+        <toc-element topic="01-00-Project.md"/>
+        <toc-element topic="02-00-Environment.md">
+        </toc-element>
+        <toc-element topic="03-00-Container.md"/>
+        <toc-element topic="04-00-Build.md"/>
+        <toc-element topic="05-00-Service.md">
+            <toc-element topic="05-01-ServiceProtocol.md"/>
+        </toc-element>
+        <toc-element topic="06-00-Command.md">
+            <toc-element topic="06-01-Process.md"/>
+        </toc-element>
     </toc-element>
     <toc-element topic="Templating.md"/>
     <toc-element topic="Changelog.md"/>

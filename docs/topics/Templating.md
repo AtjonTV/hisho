@@ -8,13 +8,13 @@ But they do not cover what the templating can actually do.
 We use the rust implementation of the [Shopify Liquid](https://shopify.github.io/liquid/) templating engine.  
 To allow you the most customizable templating, we enabled all the standard filters.
 
-## Variable scopes
+## Variable scopes {id="variables_scopes"}
 
 We use three different scopes for different types of variables to be used in templates.  
-With scope, we actually mean a object that has the variables as properties on it.
+With scope, we actually mean an object that has the variables as properties on it.
 
 Some scopes are always accessible and some are relative to the context in which the template is used.  
-For example, the `arg` scope is only available within the Process object of an Command.
+For example, the `arg` scope is only available within the Process object of a Command.
 
 | Scope | Available in                              | Description                                                                                                                                   |
 |-------|-------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
@@ -33,7 +33,7 @@ The available variables inside the `env` scope depend on the environment selecte
 ### The Git scope
 
 The available variables inside the `git` scope are always the same as defined below.  
-These variables are empty by default and only filled when the configuration file is inside of a git repository with at least one commit.
+These variables are empty by default and only filled when the configuration file is inside a git repository with at least one commit.
 
 | Name | Description                                       |
 |------|---------------------------------------------------|
