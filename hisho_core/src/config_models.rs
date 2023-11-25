@@ -73,6 +73,7 @@ pub struct Command {
     #[serde(default)]
     pub shell: Vec<Process>,
     #[serde(default)]
+    #[deprecated(note = "this field is no longer unused")]
     pub args: HashMap<String, String>,
     #[serde(default)]
     pub depends_on_build: Vec<String>,
