@@ -3,6 +3,7 @@ Project(
   environments: [
     Environment(
       name: "parent",
+      system: ["HOME"],
       // sources are files, values from files are overwritten by the values defined in here
       sources: ["hisho-parent.env"],
       // values, these override any variables from sources or inherits
@@ -50,7 +51,11 @@ Project(
       shell: [
         Process(
           command: "echo",
-          args: ["job", "'{{build.name}}'", "git", "branch='{{git.branch}}'", "sha='{{git.commit_sha_short}}'", "'{{git.commit_author_name}}'", "'{{git.commit_author_email}}'", "'{{git.commit_date}}'"]
+          args: [
+            "job", "'{{build.name}}'", "git", "branch='{{git.branch}}'", "sha='{{git.commit_sha_short}}'",
+            "'{{git.commit_author_name}}'", "'{{git.commit_author_email}}'", "'{{git.commit_date}}'",
+            "Home: {{env.HOME}}"
+          ]
         )
       ],
       input_files: ["src/*.rs"]

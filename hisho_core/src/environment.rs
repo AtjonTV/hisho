@@ -49,6 +49,14 @@ pub fn fetch_environment(
     let mut current_env: HashMap<String, String> = HashMap::new();
     let env = found_env.unwrap();
 
+    if !env.system.is_empty() {
+        for e in &env.system {
+            if let Ok(value) = std::env::var(e) {
+                current_env.insert(e.to_string(), value);
+            }
+        }
+    }
+
     if !env.inherits.is_empty() {
         let mut parent_envs: Vec<Environment> = Vec::new();
         for parent_env in &env.inherits {

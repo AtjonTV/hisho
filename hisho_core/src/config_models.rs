@@ -32,6 +32,8 @@ pub struct Project {
 pub struct Environment {
     pub name: String,
     #[serde(default)]
+    pub system: Vec<String>,
+    #[serde(default)]
     pub inherits: Vec<String>,
     #[serde(default)]
     pub values: HashMap<String, String>,
@@ -44,6 +46,7 @@ impl Environment {
     pub fn new_empty() -> Environment {
         Environment {
             name: "empty".to_string(),
+            system: Vec::new(),
             inherits: Vec::new(),
             values: HashMap::new(),
             sources: Vec::new(),
@@ -52,6 +55,7 @@ impl Environment {
     pub fn new(name: &str, inherits: Vec<String>, values: HashMap<String, String>) -> Environment {
         Environment {
             name: name.to_string(),
+            system: Vec::new(),
             inherits,
             values,
             sources: Vec::new(),
