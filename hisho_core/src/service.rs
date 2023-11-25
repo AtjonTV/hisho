@@ -28,20 +28,31 @@ pub async fn are_running(services: &Services) -> bool {
 }
 
 async fn is_running(service: &Service) -> bool {
-    match service.protocol {
-        ServiceProtocol::HTTP => {
-            if let Ok(response) = reqwest::get(service.uri.as_str()).await {
-                return response.status() == 200;
+    return match service.protocol {
+        ServiceProtocol::HTTP => match reqwest::get(service.uri.as_str()).await {
+            Ok(response) => response.status().is_success(),
+            Err(e) => {
+                log::error(format!(
+                    "\tService '{}' is not reachable: {}",
+                    service.name, e
+                ));
+                false
             }
-        }
-        ServiceProtocol::TCP => {
-            if let Ok(stream) = TcpStream::connect(service.uri.as_str()) {
+        },
+        ServiceProtocol::TCP => match TcpStream::connect(service.uri.as_str()) {
+            Ok(stream) => {
                 let _ = stream.shutdown(Shutdown::Both);
-                return true;
+                true
             }
-        }
-    }
-    false
+            Err(e) => {
+                log::error(format!(
+                    "\tService '{}' is not reachable: {}",
+                    service.name, e
+                ));
+                false
+            }
+        },
+    };
 }
 
 #[cfg(test)]
