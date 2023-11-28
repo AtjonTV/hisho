@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### Added
-* Core: Add HTTP and TCP Services and require them running
-* Core: Add loading environment variables from the system
-
 <!--
 ### Added
 ### Changed
@@ -19,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 -->
+
+## [1.1.0-rc.1] - 2023-11-28
+
+### Added
+* Core: Add HTTP and TCP Services and require them running
+* Core: Add loading environment variables from the system
 
 ## [1.0.0] - 2023-11-01
 

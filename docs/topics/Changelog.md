@@ -2,6 +2,12 @@
 
 This file is a copy of the CHANGELOG.md file from the Git repository of Hisho.
 
+## [1.1.0-rc.1] - 2023-11-28
+
+### Added
+* Core: Add HTTP and TCP Services and require them running
+* Core: Add loading environment variables from the system
+
 ## [1.0.0] - 2023-11-01
 
 Release v1.0
