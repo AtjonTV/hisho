@@ -22,5 +22,6 @@
         </toc-element>
     </toc-element>
     <toc-element topic="Templating.md"/>
+    <toc-element topic="Hisho-as-a-Library.md"/>
     <toc-element topic="Changelog.md"/>
 </instance-profile>

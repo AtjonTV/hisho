@@ -10,8 +10,8 @@
 
     <build-profile instance="h">
         <variables>
-            <noindex-content>false</noindex-content>
             <versions-switcher>https://hisho.run/help-versions.json</versions-switcher>
+            <noindex-content>false</noindex-content>
         </variables>
     </build-profile>
 </buildprofiles>
