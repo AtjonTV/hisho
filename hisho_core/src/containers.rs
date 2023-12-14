@@ -47,7 +47,7 @@ pub async fn start_containers(containers: &Containers, vars: &TemplateVariables)
                 let mut missing_containers: HashSet<String> = required_containers.clone();
                 for container in &containers {
                     for name in &container.Names {
-                        missing_containers.remove(name);
+                        missing_containers.remove(&clean_container_name(name));
                     }
                 }
                 if !missing_containers.is_empty() {
@@ -89,4 +89,12 @@ pub async fn start_containers(containers: &Containers, vars: &TemplateVariables)
         log::print(String::new());
     }
     true
+}
+
+fn clean_container_name(name: &String) -> String {
+    if name.starts_with('/') {
+        name.trim_start_matches('/').to_string()
+    } else {
+        name.to_string()
+    }
 }
