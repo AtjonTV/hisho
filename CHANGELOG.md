@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [1.1.0] - 2023-12-14
+
+### Fixed
+* Core: Container names may start with `/`, breaking our checks
+* Docs: Mistake in field type for Commands
+
 ## [1.1.0-rc.1] - 2023-11-28
 
 ### Added

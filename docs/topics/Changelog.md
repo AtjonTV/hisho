@@ -2,6 +2,12 @@
 
 This file is a copy of the CHANGELOG.md file from the Git repository of Hisho.
 
+## [1.1.0] - 2023-12-14
+
+**Fixed**
+  * Core: Container names may start with `/`, breaking our checks
+  * Docs: Mistake in field type for Commands
+
 ## [1.1.0-rc.1] - 2023-11-28
 
 ### Added
