@@ -15,6 +15,8 @@ use crate::log;
 use crate::template;
 use crate::template::TemplateVariables;
 
+const MODULE_NAME: &str = "containers";
+
 #[deprecated(since = "1.1.0-dev.0", note = "Use `start_containers` instead")]
 pub async fn ensure_running(containers: &Containers, vars: &TemplateVariables) -> bool {
     start_containers(containers, vars).await
@@ -22,8 +24,20 @@ pub async fn ensure_running(containers: &Containers, vars: &TemplateVariables) -
 
 /// Try to start the given containers if the exist and are stopped.
 pub async fn start_containers(containers: &Containers, vars: &TemplateVariables) -> bool {
+    start_containers3(containers, vars, false).await
+}
+
+/// Try to start the given containers if the exist and are stopped.
+pub async fn start_containers3(
+    containers: &Containers,
+    vars: &TemplateVariables,
+    explain_only: bool,
+) -> bool {
     if !containers.is_empty() {
-        log::print("Checking Container dependencies ..".to_string());
+        log::print2(
+            MODULE_NAME,
+            "Checking Container dependencies ..".to_string(),
+        );
         let docker_con = Docker::connect_with_defaults();
         if let Ok(docker) = docker_con {
             let mut required_containers: HashSet<String> = HashSet::new();
@@ -34,7 +48,10 @@ pub async fn start_containers(containers: &Containers, vars: &TemplateVariables)
                         required_containers.insert(name.clone());
                         filters.name(name.as_str());
                     } else {
-                        log::error(format!("\tFailed to render container name: {}", c.name));
+                        log::error2(
+                            MODULE_NAME,
+                            format!("Failed to render container name: {}", c.name),
+                        );
                         return false;
                     }
                 }
@@ -51,42 +68,59 @@ pub async fn start_containers(containers: &Containers, vars: &TemplateVariables)
                     }
                 }
                 if !missing_containers.is_empty() {
-                    log::error(format!(
-                        "\tMissing containers: {}",
-                        missing_containers
-                            .iter()
-                            .map(|c| c.to_string())
-                            .collect::<Vec<String>>()
-                            .join(", ")
-                    ));
-                    return false;
+                    log::error2(
+                        MODULE_NAME,
+                        format!(
+                            "Missing containers: {}",
+                            missing_containers
+                                .iter()
+                                .map(|c| c.to_string())
+                                .collect::<Vec<String>>()
+                                .join(", ")
+                        ),
+                    );
+                    if !explain_only {
+                        return false;
+                    }
                 }
                 for container in containers {
-                    log::print(format!(
-                        "\tContainer {:?} is {}",
-                        container.Names, container.State
-                    ));
+                    log::print2(
+                        MODULE_NAME,
+                        format!("\tContainer {:?} is {}", container.Names, container.State),
+                    );
                     if container.State != "running" {
+                        if explain_only {
+                            log::explain2(
+                                MODULE_NAME,
+                                format!("\tStart container '{:?}'", container.Names),
+                            );
+                            return true;
+                        }
                         if let Err(e) = docker.start_container(container.Id.as_str()).await {
-                            log::error(format!(
-                                "\tCould not start container {:?}: {:?}",
-                                container.Names, e
-                            ));
+                            log::error2(
+                                MODULE_NAME,
+                                format!("Could not start container {:?}: {:?}", container.Names, e),
+                            );
                             return false;
                         } else {
-                            log::print(format!("\tStarted container {:?}", container.Names));
+                            log::print2(
+                                MODULE_NAME,
+                                format!("\tStarted container {:?}", container.Names),
+                            );
                         }
                     }
                 }
             } else {
-                log::error("\tCannot find required containers".to_string());
+                log::error2(MODULE_NAME, "Cannot find required containers".to_string());
                 return false;
             }
         } else {
-            log::error("Could not connect to docker daemon".to_string());
+            log::error2(
+                MODULE_NAME,
+                "Could not connect to docker daemon".to_string(),
+            );
             return false;
         }
-        log::print(String::new());
     }
     true
 }

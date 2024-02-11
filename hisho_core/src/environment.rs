@@ -14,6 +14,8 @@ use crate::config_models::{Environment, Environments};
 use crate::log;
 use crate::template;
 
+const MODULE_NAME: &str = "environment";
+
 /// Try to find the environment by name from the environments.
 ///
 /// Also recursively resolve all sources and includes.
@@ -41,7 +43,10 @@ pub fn fetch_environment(
 
     if found_env.is_none() {
         if !environment.is_empty() {
-            log::error(format!("Could not find environment: {}", environment));
+            log::error2(
+                MODULE_NAME,
+                format!("Could not find environment: {}", environment),
+            );
         }
         return None;
     }
@@ -101,10 +106,16 @@ fn load_env_from_file(
                         out_env.insert(k, v);
                     }
                 } else {
-                    log::error(format!("Could not parse environment file {}", path));
+                    log::error2(
+                        MODULE_NAME,
+                        format!("Could not parse environment file {}", path),
+                    );
                 }
             } else {
-                log::error(format!("Could not read environment file: {}", path));
+                log::error2(
+                    MODULE_NAME,
+                    format!("Could not read environment file: {}", path),
+                );
             }
         }
     }

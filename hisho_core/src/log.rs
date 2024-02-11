@@ -10,14 +10,33 @@ use color_print::cformat;
 
 /// Print to stdout with a colored prefix
 pub fn print(text: String) {
-    println!("{} {}", get_tag(), text);
+    println!("{}", text);
+}
+
+pub fn print2(module: &str, text: String) {
+    println!("{} {}", get_mod_tag(module), text);
 }
 
 /// Print in red color to stderr with a colored prefix
 pub fn error(text: String) {
-    eprintln!("{}", cformat!("{} <red>{}</>", get_tag(), text));
+    eprintln!("{}", cformat!("<red>{}</>", text));
 }
 
-fn get_tag() -> String {
-    cformat!("<green>{}</><cyan>{}</><green>{}</> ", "[", "Hisho", "]")
+pub fn error2(module: &str, text: String) {
+    eprintln!("{}", cformat!("{} <red>{}</>", get_mod_tag(module), text));
+}
+
+pub fn explain(text: String) {
+    println!("{} {}", get_explain_tag(), text);
+}
+pub fn explain2(module: &str, text: String) {
+    println!("{} {} {}", get_mod_tag(module), get_explain_tag(), text);
+}
+
+fn get_mod_tag(module: &str) -> String {
+    cformat!("<cyan>{:<8}</> ", module.to_uppercase(),)
+}
+
+fn get_explain_tag() -> String {
+    cformat!("<red>{}</> ", "EXPLAIN")
 }

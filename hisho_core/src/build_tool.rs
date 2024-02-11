@@ -15,11 +15,12 @@ use crate::template;
 use crate::template::TemplateVariables;
 use crate::{containers, files, log};
 
-/////// DEPRECATED SECTION BEGIN ///////
+const MODULE_NAME: &str = "build";
 
+/////// DEPRECATED SECTION BEGIN ///////
 #[deprecated(since = "1.1.0-dev.0", note = "Use `run_builds` instead")]
 pub fn ensure_build(cmd: &Command, build_steps: &BuildSteps, vars: &TemplateVariables) -> bool {
-    run_steps_for_command(cmd, build_steps, vars)
+    run_steps_for_command4(cmd, build_steps, vars, false)
 }
 
 #[deprecated(since = "1.1.0-dev.0", note = "Use `run_steps` instead")]
@@ -28,16 +29,58 @@ pub fn ensure_steps_are_build(
     build_steps: &BuildSteps,
     vars: &TemplateVariables,
 ) -> bool {
-    run_steps(steps, build_steps, vars)
+    run_steps4(steps, build_steps, vars, false)
 }
 
-/////// DEPRECATED SECTION END  ///////
-
+#[deprecated(since = "1.2.0-dev.0", note = "Use `run_build5` instead")]
 pub async fn run_build(
     project: &Project,
     step: &BuildStep,
     environment: &str,
     default_vars: &TemplateVariables,
+) -> bool {
+    run_build5(project, step, environment, default_vars, false).await
+}
+
+#[deprecated(since = "1.2.0-dev.0", note = "Use `run_steps_for_command4` instead")]
+pub fn run_steps_for_command(
+    cmd: &Command,
+    build_steps: &BuildSteps,
+    vars: &TemplateVariables,
+) -> bool {
+    run_steps4(&cmd.depends_on_build, build_steps, vars, false)
+}
+
+#[deprecated(since = "1.2.0-dev.0", note = "Use `run_steps4` instead")]
+pub fn run_steps(steps: &Vec<String>, build_steps: &BuildSteps, vars: &TemplateVariables) -> bool {
+    run_steps4(steps, build_steps, vars, false)
+}
+/////// DEPRECATED SECTION END  ///////
+
+/// Runs a build step for a project
+///
+/// This function takes a project, a build step, an environment, and default variables, and runs the build step.
+/// It ensures that the required containers are running, and then runs the build step.
+/// The outputs of the build step are printed to the console.
+///
+/// # Arguments
+///
+/// * `project` - The project to run the build step for
+/// * `step` - The build step to run
+/// * `environment` - The environment to use for the build step
+/// * `default_vars` - The default variables to use for the template engine
+/// * `explain_only` - Whether to only explain what the build would do, without actually doing it
+///
+/// # Returns
+///
+/// * `true` if the build step ran successfully
+/// * `false` if the build step did not run successfully
+pub async fn run_build5(
+    project: &Project,
+    step: &BuildStep,
+    environment: &str,
+    default_vars: &TemplateVariables,
+    explain_only: bool,
 ) -> bool {
     let mut vars = default_vars.clone();
     let env = fetch_environment(
@@ -56,7 +99,7 @@ pub async fn run_build(
     let steps: Vec<String> = vec![step.name.clone()];
 
     // make sure required builds have run successfully
-    if !run_steps(&steps, &project.build, &vars) {
+    if !run_steps4(&steps, &project.build, &vars, explain_only) {
         return false;
     }
 
@@ -82,12 +125,13 @@ pub async fn run_build(
 /// * `true` if all existing build steps for cmd executed successfully
 /// * `false` otherwise
 ///
-pub fn run_steps_for_command(
+pub fn run_steps_for_command4(
     cmd: &Command,
     build_steps: &BuildSteps,
     vars: &TemplateVariables,
+    explain_only: bool,
 ) -> bool {
-    run_steps(&cmd.depends_on_build, build_steps, vars)
+    run_steps4(&cmd.depends_on_build, build_steps, vars, explain_only)
 }
 
 /// Ensure that all build steps have been run successfully
@@ -107,20 +151,26 @@ pub fn run_steps_for_command(
 ///
 /// * `true` if all existing build steps for cmd executed successfully
 /// * `false` otherwise
-pub fn run_steps(steps: &Vec<String>, build_steps: &BuildSteps, vars: &TemplateVariables) -> bool {
+pub fn run_steps4(
+    steps: &Vec<String>,
+    build_steps: &BuildSteps,
+    vars: &TemplateVariables,
+    explain_only: bool,
+) -> bool {
     if !steps.is_empty() {
-        log::print("Checking Build dependencies ..".to_string());
-
         let build_steps = get_build_steps(steps, build_steps, vars);
         for (step_name, shell) in build_steps {
             for proc in shell {
-                log::print(format!("\tRunning build step: {}", step_name));
-                let result = shell::exec(&proc, vars.get("env"));
+                log::print2(MODULE_NAME, format!("Running build step: {}", step_name));
+                let result = shell::exec3(&proc, vars.get("env"), explain_only);
                 if result.is_err() {
-                    log::print("\tFailed to run Build Step!".to_string());
+                    log::error2(MODULE_NAME, "Failed to run Build Step!".to_string());
                     return false;
                 } else if !result.unwrap().success() {
-                    log::error("\tBuild Step returned non-zero exit code!".to_string());
+                    log::error2(
+                        MODULE_NAME,
+                        "Build Step returned non-zero exit code!".to_string(),
+                    );
                     return false;
                 }
             }

@@ -12,6 +12,8 @@ use std::collections::HashMap;
 use crate::config_models::Process;
 use crate::log;
 
+const MODULE_NAME: &str = "template";
+
 type TemplateVarMap = HashMap<String, HashMap<String, String>>;
 
 #[derive(Debug, Clone)]
@@ -45,22 +47,25 @@ pub fn render_string(template: String, data: &Object) -> Option<String> {
             if let Ok(rendered_value) = tp_value {
                 return Some(rendered_value);
             } else {
-                log::error(format!(
-                    "Failed to render template: {}",
-                    tp_value.err().unwrap()
-                ));
+                log::error2(
+                    MODULE_NAME,
+                    format!("Failed to render template: {}", tp_value.err().unwrap()),
+                );
             }
         } else {
-            log::error(format!(
-                "Failed to parse template: {}",
-                tp_template.err().unwrap()
-            ));
+            log::error2(
+                MODULE_NAME,
+                format!("Failed to parse template: {}", tp_template.err().unwrap()),
+            );
         }
     } else {
-        log::error(format!(
-            "Failed to create template engine: {}",
-            tp_engine.err().unwrap()
-        ));
+        log::error2(
+            MODULE_NAME,
+            format!(
+                "Failed to create template engine: {}",
+                tp_engine.err().unwrap()
+            ),
+        );
     }
     None
 }

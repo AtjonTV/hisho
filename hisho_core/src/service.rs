@@ -11,16 +11,24 @@ use std::net::{Shutdown, TcpStream};
 use crate::config_models::{Service, ServiceProtocol, Services};
 use crate::log;
 
+const MODULE_NAME: &str = "service";
+
 /// Check that all services are running
 pub async fn are_running(services: &Services) -> bool {
     if !services.is_empty() {
-        log::print("Checking Services ...".to_string());
+        log::print2(MODULE_NAME, "Checking Services ...".to_string());
         for service in services {
             if !is_running(service).await {
-                log::error(format!("\tService '{}' is not running.", service.name));
+                log::error2(
+                    MODULE_NAME,
+                    format!("\tService '{}' is not running.", service.name),
+                );
                 return false;
             } else {
-                log::print(format!("\tService '{}' is running.", service.name));
+                log::print2(
+                    MODULE_NAME,
+                    format!("\tService '{}' is running.", service.name),
+                );
             }
         }
     }
@@ -32,10 +40,10 @@ async fn is_running(service: &Service) -> bool {
         ServiceProtocol::HTTP => match reqwest::get(service.uri.as_str()).await {
             Ok(response) => response.status().is_success(),
             Err(e) => {
-                log::error(format!(
-                    "\tService '{}' is not reachable: {}",
-                    service.name, e
-                ));
+                log::error2(
+                    MODULE_NAME,
+                    format!("Service '{}' is not reachable: {}", service.name, e),
+                );
                 false
             }
         },
@@ -45,10 +53,10 @@ async fn is_running(service: &Service) -> bool {
                 true
             }
             Err(e) => {
-                log::error(format!(
-                    "\tService '{}' is not reachable: {}",
-                    service.name, e
-                ));
+                log::error2(
+                    MODULE_NAME,
+                    format!("Service '{}' is not reachable: {}", service.name, e),
+                );
                 false
             }
         },
