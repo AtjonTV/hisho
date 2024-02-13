@@ -46,8 +46,11 @@ pub async fn run_command5(
     .unwrap_or(Environment::new_empty());
     vars.insert("env", env.values);
 
-    if explain_only {
-        log::print2(MODULE_NAME, format!("Environment: {}", cmd.environment));
+    if explain_only && !cmd.environment.is_empty() {
+        log::print2(
+            MODULE_NAME,
+            format!("Environment name: {}", cmd.environment),
+        );
     }
 
     // make sure required containers are running
