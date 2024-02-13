@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-<!--
 ### Added
+* Core: `explain_only` options on primary functions
+* Cli: `explain` commands for run and build
 ### Changed
+* Core: The console output looks prettier now, it also has the module name as prefix
 ### Deprecated
+* Core: Many APIs, due to Rust's lack of argument overloading
+<!--
 ### Removed
 ### Fixed
 ### Security
