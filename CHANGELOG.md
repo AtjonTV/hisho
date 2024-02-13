@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<!--
 ## [unreleased]
+
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
+-->
+
+## [1.2.0-rc.1] - 2024-02-13
 
 ### Added
 * Core: `explain_only` options on primary functions
@@ -14,11 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Core: The console output looks prettier now, it also has the module name as prefix
 ### Deprecated
 * Core: Many APIs, due to Rust's lack of argument overloading
-<!--
-### Removed
-### Fixed
-### Security
--->
 
 ## [1.1.0] - 2023-12-14
 

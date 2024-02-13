@@ -2,6 +2,18 @@
 
 This file is a copy of the CHANGELOG.md file from the Git repository of Hisho.
 
+## 1.2.0-rc.1 - 2024-02-13
+
+**Added**
+  * Core: `explain_only` options on primary functions
+  * Cli: `explain` commands for run and build
+
+**Changed**
+  * Core: The console output looks prettier now, it also has the module name as prefix
+
+**Deprecated**
+  * Core: Many APIs, due to Rust's lack of argument overloading
+
 ## [1.1.0] - 2023-12-14
 
 **Fixed**
