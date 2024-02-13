@@ -51,12 +51,12 @@ pub async fn run_command5(
     }
 
     // make sure required containers are running
-    if !containers::start_containers(&project.containers, &vars).await {
+    if !containers::start_containers3(&project.containers, &vars, explain_only).await {
         return false;
     }
 
     // make sure required services are running
-    if !service::are_running(&project.services).await {
+    if !service::are_running2(&project.services, explain_only).await {
         return false;
     }
 

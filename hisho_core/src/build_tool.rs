@@ -92,7 +92,7 @@ pub async fn run_build5(
     vars.insert("env", env.values);
 
     // make sure required containers are running
-    if !containers::start_containers(&project.containers, &vars).await {
+    if !containers::start_containers3(&project.containers, &vars, explain_only).await {
         return false;
     }
 
@@ -174,8 +174,8 @@ pub fn run_steps4(
                     return false;
                 }
             }
+            log::print(String::new());
         }
-        log::print(String::new());
     }
     true
 }

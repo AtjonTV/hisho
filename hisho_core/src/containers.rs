@@ -19,10 +19,11 @@ const MODULE_NAME: &str = "containers";
 
 #[deprecated(since = "1.1.0-dev.0", note = "Use `start_containers` instead")]
 pub async fn ensure_running(containers: &Containers, vars: &TemplateVariables) -> bool {
-    start_containers(containers, vars).await
+    start_containers3(containers, vars, false).await
 }
 
 /// Try to start the given containers if the exist and are stopped.
+#[deprecated(since = "1.2.0-dev.0", note = "Use `start_containers3` instead")]
 pub async fn start_containers(containers: &Containers, vars: &TemplateVariables) -> bool {
     start_containers3(containers, vars, false).await
 }
