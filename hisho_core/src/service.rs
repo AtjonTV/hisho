@@ -13,21 +13,28 @@ use crate::log;
 
 const MODULE_NAME: &str = "service";
 
-/// Check that all services are running
+/////// DEPRECATED SECTION BEGIN ///////
+#[deprecated(since = "1.2.0-dev.0", note = "Use `are_running2` instead")]
 pub async fn are_running(services: &Services) -> bool {
+    are_running2(services, false).await
+}
+/////// DEPRECATED SECTION END ///////
+
+/// Check that all services are running
+pub async fn are_running2(services: &Services, explain_only: bool) -> bool {
     if !services.is_empty() {
         log::print2(MODULE_NAME, "Checking Services ...".to_string());
         for service in services {
             if !is_running(service).await {
-                log::error2(
-                    MODULE_NAME,
-                    format!("\tService '{}' is not running.", service.name),
-                );
-                return false;
+                // log::error2(
+                //     MODULE_NAME,
+                //     format!("Service '{}' is not running.", service.name),
+                // );
+                return explain_only;
             } else {
                 log::print2(
                     MODULE_NAME,
-                    format!("\tService '{}' is running.", service.name),
+                    format!("Service '{}' is running.", service.name),
                 );
             }
         }
@@ -42,7 +49,11 @@ async fn is_running(service: &Service) -> bool {
             Err(e) => {
                 log::error2(
                     MODULE_NAME,
-                    format!("Service '{}' is not reachable: {}", service.name, e),
+                    format!(
+                        "Service '{}' is not reachable: {}",
+                        service.name,
+                        get_reason(&e)
+                    ),
                 );
                 false
             }
@@ -61,6 +72,20 @@ async fn is_running(service: &Service) -> bool {
             }
         },
     };
+}
+
+fn get_reason(error: &reqwest::Error) -> String {
+    if error.is_connect() {
+        return "connection refused".to_string();
+    }
+    if error.is_timeout() {
+        return "connection timeout".to_string();
+    }
+    if error.is_request() {
+        return "request failed".to_string();
+    }
+
+    error.to_string().clone()
 }
 
 #[cfg(test)]
