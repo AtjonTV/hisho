@@ -22,3 +22,10 @@ Project(
   commands: [], 
 )
 ```
+
+Empty lists can be omitted:
+```Java
+Project(
+  name: "hello-world",
+)
+```

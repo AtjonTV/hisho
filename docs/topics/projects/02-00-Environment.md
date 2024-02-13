@@ -64,8 +64,5 @@ Project(
       },
     ),
   ],
-  containers: [],
-  build: [],
-  commands: [], 
 )
 ```

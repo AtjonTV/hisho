@@ -11,3 +11,16 @@ All defined Services must be reachable.
 
 Hisho will exit if a service was not reachable, or the HTTP status was not 200 OK. 
 
+Example:
+```Java
+Project(
+  name: "hello-world",
+  services: [
+    Service(
+      name: "cloudflare",
+      uri: "https://cloudflare.com",
+      protocol: HTTP
+    )
+  ],
+)
+```

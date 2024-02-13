@@ -8,6 +8,14 @@ Hisho is a utility tool for local development with dependencies like Docker cont
 * Configure environments for commands, these are separate from the system environment
 * Human editable configuration format using RON (Rust Object Notation) for our `hisho.ron` files.
 
+## Installation
+Currently Hisho can only be installed using Cargo.
+
+If you do not need the executable to be in any particular location, simply run:
+```Bash
+cargo install hisho_cli2
+```
+
 ## Git Repository
 The main Git repository of Hisho is private.
 
