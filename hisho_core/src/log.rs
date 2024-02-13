@@ -34,7 +34,7 @@ pub fn explain2(module: &str, text: String) {
 }
 
 fn get_mod_tag(module: &str) -> String {
-    cformat!("<cyan>{:<8}</> ", module.to_uppercase(),)
+    cformat!("<cyan>{:<10}</> ", module.to_uppercase(),)
 }
 
 fn get_explain_tag() -> String {
